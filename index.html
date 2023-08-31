@@ -6,6 +6,48 @@
     <title>Working talent - Library app</title>
 </head>
 <body>
+    <h1>Boeken<h1>
+
+    <table id="books-table"></table>
+    <ul style="color:orange">
+
+    <input type="title" id="title-input">
+    <input type="edition" id="edition-input">
+    <input type="author" id="author-input">
+    <input type="ISBN" id="isbn-input">
+    <input type="category" id="category-input">
+    <input type="language" id="language-input">
+    <input type="collation" id="collation-input">
+    </ul>
+    
+    <script>
+        function search() {
+            // Asynchroon -> Threads
+
+            fetch('http://localhost:8080/person/all')   // Call URL
+                .then(response => response.json())      // THEN convert response to json object
+                .then(data => {                         // Data = array of people
+                    console.log('Data', data);
+
+                    let personsHtml = '';
+
+                    data.forEach(person => {
+                        personsHtml += `
+                            <tr>
+                                <td>${person.id}</td>
+                                <td>${person.name}</td>
+                                <td>${person.age}</td>
+                            </tr>
+                        `
+                    });
+                    document.getElementById('persons-table').innerHTML = personsHtml;
+                });     
+                
+            console.log('Na fetch')
+        }
+
+        search();
+    </script>
     
 </body>
-</html>
+</html>  
