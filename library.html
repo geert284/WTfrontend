@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <input type="text" id="searchBar">
+    <button type="button" onclick="createPerson()">Zoek een boek</button>
+
+
+    <h1>Boekenlijst</h1>
+    <table id="books-table"></table>
+
+
+    <script>
+        function search() {
+            // asynchroon in meerdere threads
+
+            fetch('http://localhost:8080/book/all')
+                // zodra antwoord: zet json om naar object, anonymous function
+                .then(response => response.json()) // soort if statement, mag ook direct achter de fetch
+                .then(data => {
+                    console.log('Data', data);
+
+                    let booksHtml = '';
+                    data.forEach(book => {
+                        booksHtml += `
+                            <tr>
+                                <td>${book.id}<td>
+                                <td>${book.title}<td>
+                                <td>${book.author}<td>
+                                <td>${book.isbn}<td>
+                                <td>${book.collation}<td>   
+                                <td>${book.category}<td>
+                                <td>${book.edition}<td>
+                                <td>${book.language}<td>
+                            <tr>
+                        `
+                    });
+
+                    document.getElementById('books-table').innerHTML = booksHtml;
+
+                });
+        }
+        search(); // aanroepen function
+
+
+
+    </script>
+</body>
+
+</html>
