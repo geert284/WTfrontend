@@ -1,0 +1,13 @@
+
+.button-solid {
+    border: none;
+    background-color: white;
+    cursor: pointer;
+}
+button-solid:focus {
+    border: none;
+    outline: none;
+}
+.button-solid:hover {
+    text-decoration: underline;
+}
