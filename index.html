@@ -3,51 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Working talent - Library app</title>
+    <title>Document</title>
 </head>
 <body>
-    <h1>Boeken<h1>
+    <h1>Personen</h1>
+    <table id="persons-table"></table>
 
-    <table id="books-table"></table>
-    <ul style="color:orange">
+    <input type="text" id="name-input">
+    <input type="number" id="age-input">
+    <button type="button" onclick="createPerson()">Opslaan</button>
 
-    <input type="title" id="title-input">
-    <input type="edition" id="edition-input">
-    <input type="author" id="author-input">
-    <input type="ISBN" id="isbn-input">
-    <input type="category" id="category-input">
-    <input type="language" id="language-input">
-    <input type="collation" id="collation-input">
-    </ul>
-    
     <script>
         function search() {
-            // Asynchroon -> Threads
+            // asynchroon in meerdere threads
 
-            fetch('http://localhost:8080/person/all')   // Call URL
-                .then(response => response.json())      // THEN convert response to json object
-                .then(data => {                         // Data = array of people
+            fetch('http://localhost:8080/person/all')
+                // zodra antwoord: zet json om naar object, anonymous function
+                .then(response => response.json()) // soort if statement, mag ook direct achter de fetch
+                .then(data => {
                     console.log('Data', data);
 
                     let personsHtml = '';
-
                     data.forEach(person => {
                         personsHtml += `
                             <tr>
-                                <td>${person.id}</td>
-                                <td>${person.name}</td>
-                                <td>${person.age}</td>
-                            </tr>
+                                <td>${person.id}<td>
+                                <td>${person.name}<td>
+                                <td>${person.age}<td>
+                            <tr>
                         `
                     });
+
                     document.getElementById('persons-table').innerHTML = personsHtml;
-                });     
-                
-            console.log('Na fetch')
+
+                });
+                console.log('Na fetch')
+        }
+        search(); // aanroepen function
+
+        function createPerson() {
+            // Formulier uitlezen
+            let nameInvoer = document.getElementById('name-input').value;
+            let ageInvoer = document.getElementById('age-input').value;
+
+            let newPerson = {
+                name: nameInvoer,
+                age: ageInvoer
+            }
+            fetch("http://localhost:8080/person/create", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newPerson)
+            })
+            .then(response => {
+                alert('Is goedgegaan');
+                search(); // aanroepen bovenste functie voor direct toevoegen
+            })
+            .catch(error => {
+                alert('Er is iets fouts gegaan');
+            });
         }
 
-        search();
     </script>
-    
 </body>
 </html>  
