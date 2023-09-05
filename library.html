@@ -14,44 +14,64 @@
 
 
     <h1>Boekenlijst</h1>
-    <table id="books-table"></table>
+    <table id="booksTable"></table>
 
+    <script>       
 
-    <script>
-        function search() {
-            // asynchroon in meerdere threads
+        let searchTerm = document.getElementById('searchBar');
+        let booksTable = document.getElementById('booksTable');
+
+        // functie die JSON gegevens bijwerkt op basis van zoekbalk
+        function updateTable(searchTerm) {
 
             fetch('http://localhost:8080/book/all')
                 // zodra antwoord: zet json om naar object, anonymous function
                 .then(response => response.json()) // soort if statement, mag ook direct achter de fetch
                 .then(data => {
-                    console.log('Data', data);
+                    // filter
+                    const filteredBooks = searchTerm ? data.filter(book => {
+                        return book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                               book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                               book.isbn.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                               book.collation.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                               book.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                               book.edition.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                               book.language.toLowerCase().includes(searchTerm.toLowerCase());
+                    }) : data;
 
-                    let booksHtml = '';
-                    data.forEach(book => {
-                        booksHtml += `
-                            <tr>
-                                <td>${book.id}<td>
-                                <td>${book.title}<td>
-                                <td>${book.author}<td>
-                                <td>${book.isbn}<td>
-                                <td>${book.collation}<td>   
-                                <td>${book.category}<td>
-                                <td>${book.edition}<td>
-                                <td>${book.language}<td>
-                            <tr>
-                        `
-                    });
+                    // Bouw de tabel
+                    const tableHTML = filteredBooks.map(book => {
+                        return `<tr>
+                                <td>${book.title}</td>
+                                <td>${book.author}</td>
+                                <td>${book.isbn}</td>
+                                <td>${book.collation}</td>   
+                                <td>${book.category}</td>
+                                <td>${book.edition}</td> 
+                                <td>${book.language}</td>
+                            <tr>`;
+                    }).join('');
 
-                    document.getElementById('books-table').innerHTML = booksHtml;
-
+                    // Voeg bovenste regel van de tabel toe
+                    booksTable.innerHTML = `<tr>
+                                            <th>Title</th>
+                                            <th>Author</th>
+                                            <th>Isbn</th>
+                                            <th>Collation</th>
+                                            <th>Category</th>
+                                            <th>Edition</th>
+                                            <th>language</th>
+                                        </tr>${tableHTML}`;
                 });
-        }
-        search(); // aanroepen function
-
-
+        };
+        searchTerm.addEventListener('input', function() {
+            updateTable(searchTerm.value);
+        });
+        updateTable('');
 
     </script>
+
+
 </body>
 
 </html>
