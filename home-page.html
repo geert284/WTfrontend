@@ -20,5 +20,22 @@
     <button type="button" style="float:right; margin-right:10px; margin-top:43px;" class="button-solid" onclick="window.location.href = 'my-account.html';">Mijn account</button>
     <h2>Home pagina</h2>
     <h3>Welkom !!!!</h3>
+
+    <input type="text" id="searchBar" placeholder="Zoek een boek">
+    <button type="button" onclick="navigateToBooks()">Zoek</button>
+
+    <script>
+        function navigateToBooks() {
+            const searchTerm = document.getElementById('searchBar').value;
+            window.location.href = `library.html?search=${encodeURIComponent(searchTerm)}`;
+        }
+
+        document.getElementById('searchBar').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                navigateToBooks();
+            }
+        });
+    </script>
+
 </body>
 </html>
