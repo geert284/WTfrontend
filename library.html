@@ -1,84 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="mystyle.css">
-    
+
 </head>
+
 <body>
     <img src="WT-logo.png" width="216" height="56">
     <button type="button" class="button-solid" onclick="window.location.href = 'home-page.html';">Home</button>
     <button type="button" class="button-solid" onclick="window.location.href = 'library.html';">Bibliotheek</button>
     <button type="button" class="button-solid" onclick="window.location.href = 'my-books.html';">Mijn boeken</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'res-and-loans.html';">Reserveringen en Leningen</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'manage-books.html';">Boeken beheren</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'manage-users.html';">Gebruikers beheren</button>
-    
+    <button type="button" class="button-solid" onclick="window.location.href = 'res-and-loans.html';">Reserveringen en
+        Leningen</button>
+    <button type="button" class="button-solid" onclick="window.location.href = 'manage-books.html';">Boeken
+        beheren</button>
+    <button type="button" class="button-solid" onclick="window.location.href = 'manage-users.html';">Gebruikers
+        beheren</button>
+
     <img src="account-logo.png" style="float:right; margin-right:20px; margin-top:40px;" width="20" height="20">
-    <button type="button" style="float:right; margin-right:10px; margin-top:43px;" class="button-solid" onclick="window.location.href = 'my-account.html';">Mijn account</button>
+    <button type="button" style="float:right; margin-right:10px; margin-top:43px;" class="button-solid"
+        onclick="window.location.href = 'my-account.html';">Mijn account</button>
     <h2>Bibliotheek</h2>
 
-    <input type="text" id="searchBar">
+    <input type="text" id="searchBar" placeholder="Zoek">
     <button type="button" onclick="createPerson()">Zoek een boek</button>
 
+    <!-- Filteropties -->
+    <h3>Filters</h4>
+    <div>
+        <label for="categoryFilter">Categorie:</label>
+        <select id="categoryFilter">
+            <option value="">Alle categorieën</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="collationFilter">Collatie:</label>
+        <select id="collationFilter">
+            <option value="">Alle collaties</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="languageFilter">Taal:</label>
+        <select id="languageFilter">
+            <option value="">Alle talen</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="availablilyFilter">Beschikbaar:</label>
+        <select id="availablilyFilter">
+            <option value="">Alle beschikbaarheden</option>
+        </select>
+    </div>
 
     <h1>Boekenlijst</h1>
     <table id="booksTable"></table>
 
-    <script>       
+    <script>
 
-        let searchTerm = document.getElementById('searchBar');
-        let booksTable = document.getElementById('booksTable');
+        const searchTerm = document.getElementById('searchBar');
+        const booksTable = document.getElementById('booksTable');
+        const searchBar = document.getElementById('searchBar');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const collationFilter = document.getElementById('collationFilter');
+        const languageFilter = document.getElementById('languageFilter');
+        const availablilyFilter = document.getElementById('availablilyFilter');
+        let booksData; // Hier bewaren we de originele boekgegevens
 
         // functie die JSON gegevens bijwerkt op basis van zoekbalk
-        function updateTable(searchTerm) {
+        async function updateTable(searchTerm) {
+            const categoryValue = categoryFilter.value;
+            const collationValue = collationFilter.value;
+            const languageValue = languageFilter.value;
+            const availabiltyValue = availablilyFilter.value;
 
-            fetch('http://localhost:8080/book/all')
-                // zodra antwoord: zet json om naar object, anonymous function
-                .then(response => response.json()) // soort if statement, mag ook direct achter de fetch
-                .then(data => {
-                    // filter
-                    const filteredBooks = searchTerm ? data.filter(book => {
-                        return book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                               book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                               book.isbn.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                               book.collation.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                               book.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                               book.edition.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                               book.language.toLowerCase().includes(searchTerm.toLowerCase());
-                    }) : data;
+            try {
+                const response = await fetch('http://localhost:8080/book/all');
+                const data = await response.json();
 
-                    // Bouw de tabel
-                    const tableHTML = filteredBooks.map(book => {
-                        return `<tr>
-                                <td>${book.title}</td>
-                                <td>${book.author}</td>
-                                <td>${book.isbn}</td>
-                                <td>${book.collation}</td>   
-                                <td>${book.category}</td>
-                                <td>${book.edition}</td> 
-                                <td>${book.language}</td>
-                            <tr>`;
-                    }).join('');
+                // Add available copies information to the filtered books
+                const booksWithCopies = await addAvailableCopiesToBooks(data);
 
-                    // Voeg bovenste regel van de tabel toe
-                    booksTable.innerHTML = `<tr>
-                                            <th>Title</th>
-                                            <th>Author</th>
-                                            <th>Isbn</th>
-                                            <th>Collation</th>
-                                            <th>Category</th>
-                                            <th>Edition</th>
-                                            <th>language</th>
-                                        </tr>${tableHTML}`;
+                // Filter the books based on the provided search criteria
+                let filteredBooks = searchTerm ? booksWithCopies.filter(book => {
+                    return book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        book.isbn.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        book.collation.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        book.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        book.language.toLowerCase().includes(searchTerm.toLowerCase());
+                }) : data;
+
+                // Further filter based on category, collation, and language
+                filteredBooks = filteredBooks.filter(book => {
+                    return (categoryValue === '' || book.category === categoryValue) &&
+                        (collationValue === '' || book.collation === collationValue) &&
+                        (languageValue === '' || book.language === languageValue) &&
+                        (availabiltyValue === '' || (book.availableCopies !== 0 && availabiltyValue === 'Ja' ) ||
+                        (book.availableCopies == 0 && availabiltyValue === 'Nee' ));
                 });
-        };
-        searchTerm.addEventListener('input', function() {
+
+                // Build the table
+                const tableHTML = filteredBooks.map(book => {
+                    return `<tr>
+              <td>${book.title}</td>
+              <td>${book.author}</td>
+              <td>${book.isbn}</td>
+              <td>${book.collation}</td>   
+              <td>${book.category}</td>
+              <td>${book.edition}</td> 
+              <td>${book.language}</td>
+              <td>${book.availableCopies}</td>
+          </tr>`;
+                }).join('');
+
+                // Add the table to the HTML
+                booksTable.innerHTML = `<tr>
+                            <th>Titel</th>
+                            <th>Auteur</th>
+                            <th>Isbn</th>
+                            <th>Collatie</th>
+                            <th>Categorie</th>
+                            <th>Editie</th>
+                            <th>Taal</th>
+                            <th>Beschikbare kopieën</th>
+                        </tr>${tableHTML}`;
+            } catch (error) {
+                console.error('Fout bij het bijwerken van de tabel:', error);
+            }
+        }
+
+        // Functie om unieke waarden voor filters op te halen
+        function extractFilterValues(data, field) {
+            return [...new Set(data.map(item => item[field]))];
+        }
+
+        // Haal de boekgegevens op bij het laden van de pagina
+        fetch('http://localhost:8080/book/all')
+            .then(response => response.json())
+            .then(data => {
+                booksData = data; // Bewaar de originele boekgegevens
+
+                // Haal unieke waarden op voor de filteropties
+                const categoryValues = extractFilterValues(data, 'category');
+                const collatieValues = extractFilterValues(data, 'collation');
+                const taalValues = extractFilterValues(data, 'language');
+                const beschikbaarValues = ['Ja', 'Nee']; // Beschikbaarheidsopties zijn vast voor nu
+
+                // Vul de select-elementen met filteropties
+                fillSelectOptions(categoryFilter, categoryValues);
+                fillSelectOptions(collationFilter, collatieValues);
+                fillSelectOptions(languageFilter, taalValues);
+                fillSelectOptions(availablilyFilter, beschikbaarValues);
+
+                updateTable(searchTerm.value); // Pas de filters toe op de oorspronkelijke gegevens
+            });
+
+        // Functie om select-elementen te vullen met opties
+        function fillSelectOptions(selectElement, options) {
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                selectElement.appendChild(optionElement);
+            });
+        }
+
+        searchTerm.addEventListener('input', function () {
             updateTable(searchTerm.value);
         });
-        updateTable('');
+
+        categoryFilter.addEventListener('input', function () {
+            updateTable(searchTerm.value);
+        });
+
+        collationFilter.addEventListener('input', function () {
+            updateTable(searchTerm.value);
+        });
+
+        languageFilter.addEventListener('input', function () {
+            updateTable(searchTerm.value);
+        });
+
+        availablilyFilter.addEventListener('input', function () {
+            updateTable(searchTerm.value);
+        });
+
+        // Haal de zoekterm op uit de URL-parameters en vul de zoekbalk ermee
+        function getSearchTermFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchParam = urlParams.get('search');
+            if (searchParam) {
+                searchBar.value = decodeURIComponent(searchParam);
+            }
+        }
+
+        // Roep getSearchTermFromURL aan om de zoekterm uit de URL te halen en in te vullen
+        getSearchTermFromURL();
+
+        // Functie die telt het aantal beschikbare copys van alle boeken
+        function countAvailableCopys() {
+            return fetch('http://localhost:8080/bookcopy/all')
+                .then(response => response.json())
+                .then(book_copys => {
+                    let count = {};
+
+                    // Loop door alle boeken
+                    for (let i = 0; i < book_copys.length; i++) {
+                        if (book_copys[i].available) {
+                            const bookId = book_copys[i].book.id;
+                            count[bookId] = (count[bookId] || 0) + 1;
+                        }
+                    }
+
+                    return count;
+                });
+        }
+
+        // Function to add counts of available copies to the books array
+        async function addAvailableCopiesToBooks(books) {
+            try {
+                const counts = await countAvailableCopys();
+
+                // Loop through the books array and add the count property to each book
+                for (let i = 0; i < books.length; i++) {
+                    books[i].availableCopies = counts[books[i].id] || 0;
+                }
+
+                return books;
+            } catch (error) {
+                console.error('Error adding available copies to books:', error);
+                throw error;
+            }
+        }
 
     </script>
 
