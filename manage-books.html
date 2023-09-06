@@ -8,6 +8,53 @@
     
 </head>
 <body>
+    <script>
+        function switchTable() {
+            var selectedTable = document.getElementById("book-options").value;
+            if (selectedTable == "Exemplaren") {
+                document.getElementById("bookadmin-table").style.display = "none";
+                document.getElementById("copyadmin-table").style.display = "table";
+            } else {
+                document.getElementById("copyadmin-table").style.display = "none";
+                document.getElementById("bookadmin-table").style.display = "table";
+            }
+            
+        }
+
+        function searchBooksAdmin() {
+            fetch('http://localhost:8080/book/all')
+            .then(response => response.json())
+            .then(data => { 
+                    console.log('Data', data);
+
+                    let booksAdminHtml = `
+                        <tr id="table-header">
+                            <td>Titel</td>
+                            <td>Schrijver</td>
+                            <td>Categorie</td>
+                            <td>Editie</td>
+                            <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-book.html';" class="green-button">+</button></td>
+                        </tr>
+                    `
+                    data.forEach(book => {
+                        booksAdminHtml += `
+                            <tr>
+                                <td>${book.title}</td>
+                                <td>${book.author}</td>
+                                <td>${book.category}</td>
+                                <td>${book.edition}</td>
+                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html';" class="green-button">Wijzig</button></td>
+                            </tr>
+                        `
+                    });
+
+                    document.getElementById('bookadmin-table').innerHTML = booksAdminHtml;
+
+                });
+        }
+        searchBooksAdmin();
+    </script>
+
     <img src="WT-logo.png" width="216" height="56">
     <button type="button" class="button-solid" onclick="window.location.href = 'home-page.html';">Home</button>
     <button type="button" class="button-solid" onclick="window.location.href = 'library.html';">Bibliotheek</button>
@@ -18,6 +65,44 @@
     
     <img src="account-logo.png" style="float:right; margin-right:20px; margin-top:40px;" width="20" height="20">
     <button type="button" style="float:right; margin-right:10px; margin-top:43px;" class="button-solid" onclick="window.location.href = 'my-account.html';">Mijn account</button>
-    <h2>Boeken beheren</h2>
+    
+    <br><br><br>
+
+    <!-- 
+    <div class="sidebar">
+        <br><br><br><br>
+        <div style="font-weight: bold;">Filters</div>
+        <hr>
+        <div>Filter 1</div>
+        <div>Filter 2</div>
+        <div>Filter 3</div>
+    </div> -->
+
+    
+    <div class="body-text">
+        <h2>Boeken beheren</h2>
+        <h3 style="color: red;">Zoekbalk hier</h3>
+        
+        <label for="book-options" style="margin-left: 68%;">Toon:</label>
+        <select id="book-options" onchange="switchTable()">
+            <option label="Boeken">Boeken</option>
+            <option label="Exemplaren">Exemplaren</option>
+        </select>
+        <br><br>
+        <table id="bookadmin-table"></table>
+        <table id="copyadmin-table" style="display: none;">
+            <tr id="table-header2">
+                <td>Titel</td>
+                <td>Schrijver</td>
+                <td>Categorie</td>
+                <td>Editie</td>
+                <td>Staat</td>
+                <td>Beschikbaar</td>
+                <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-book.html';" class="green-button">+</button></td>
+            </tr>
+        </table>
+    </div>
+
+
 </body>
 </html>
