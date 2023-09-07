@@ -8,6 +8,48 @@
 
 </head>
 <body>
+    <script>
+        function searchUsers() {
+            fetch('http://localhost:8080/account/all')
+            .then(response => response.json())
+            .then(data => { 
+                    console.log('Data', data);
+
+                    let accountHtml = `
+                        <tr id="table-header">
+                            <td>Naam</td>
+                            <td>Email</td>
+                            <td>Admin</td>
+                        </tr>
+                    `
+                    data.forEach(account => {
+                        accountHtml += `
+                            <tr>
+                                <td>${account.firstName} ${account.lastName}</td>
+                                <td>${account.email}</td>
+                                <td>${account.admin}</td>
+                                <td style="text-align: right"><button type="button" onclick="deleteConfirmMessage()" class="green-button">Verwijder</button></td>
+                            </tr>
+                        `
+                    });
+
+                    document.getElementById('user-table').innerHTML = accountHtml;
+
+                });
+        }
+        searchUsers();
+
+        function deleteConfirmMessage() {
+                var x;
+                if (confirm("Weet u zeker dat u dit account wilt verwijderen?") == true) {
+                    x = "OK";
+                    // next function
+                } else {
+                    x = "Cancel";
+                }
+        }
+    </script>
+
     <img src="WT-logo.png" width="216" height="56">
     <button type="button" class="button-solid" onclick="window.location.href = 'home-page.html';">Home</button>
     <button type="button" class="button-solid" onclick="window.location.href = 'library.html';">Bibliotheek</button>
@@ -18,6 +60,18 @@
     
     <img src="account-logo.png" style="float:right; margin-right:20px; margin-top:40px;" width="20" height="20">
     <button type="button" style="float:right; margin-right:10px; margin-top:43px;" class="button-solid" onclick="window.location.href = 'my-account.html';">Mijn account</button>
+    
+    <br><br><br>
+
+    
     <h2>Gebruikers beheren</h2>
+    <h3 style="color: red;">Zoekbalk hier</h3>
+    <table id="user-table"></table>
+
+    <br><br><br>
+    <h4>Gebruiker toevoegen aan whitelist</h4>
+    <input style="margin-left: 224px; width: 300px;" type="text" placeholder="w.talent@gmail.com">
+    <button type="button" class="green-button">Toevoegen</button>
+
 </body>
 </html>
