@@ -42,9 +42,9 @@
 
         function deleteConfirmMessage(accountId) {
                 var x;
-                if (confirm("Weet u zeker dat u dit account wilt verwijderen?") == true) {
+                if (confirm("Weet u zeker dat u dit account wilt verwijderen? Bij het verwijderen van een account is het niet meer terug te leiden naar een lening of reservering.") == true) {
                     x = "OK";
-                    // next function
+                    // next function using accountId argument
                 } else {
                     x = "Cancel";
                 }
