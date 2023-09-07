@@ -214,7 +214,7 @@
                         // Loop door alle boeken
                         for (let i = 0; i < book_copys.length; i++) {
                             if (book_copys[i].available) {
-                                const bookId = book_copys[i].book.id;
+                                const bookId = book_copys[i].bookId;
                                 count[bookId] = (count[bookId] || 0) + 1;
                             }
                         }
