@@ -17,7 +17,7 @@
     <h2>Bibliotheek</h2>
 
     <input type="text" id="searchBar" placeholder="Zoek">
-    <button type="button" onclick="createPerson()">Zoek een boek</button>
+    <button type="button" onclick="updateTable(searchTerm.value)">Zoek een boek</button>
 
     <!-- Filteropties -->
     <h3>Filters</h4>
@@ -29,9 +29,9 @@
         </div>
 
         <div>
-            <label for="collationFilter">Collatie:</label>
-            <select id="collationFilter">
-                <option value="">Alle collaties</option>
+            <label for="formatFilter">Vorm:</label>
+            <select id="formatFilter">
+                <option value="">Alle vormen</option>
             </select>
         </div>
 
@@ -58,7 +58,7 @@
             const booksTable = document.getElementById('booksTable');
             const searchBar = document.getElementById('searchBar');
             const categoryFilter = document.getElementById('categoryFilter');
-            const collationFilter = document.getElementById('collationFilter');
+            const formatFilter = document.getElementById('formatFilter');
             const languageFilter = document.getElementById('languageFilter');
             const availablilyFilter = document.getElementById('availablilyFilter');
             let booksData; // Hier bewaren we de originele boekgegevens
@@ -66,7 +66,7 @@
             // functie die JSON gegevens bijwerkt op basis van zoekbalk
             async function updateTable(searchTerm) {
                 const categoryValue = categoryFilter.value;
-                const collationValue = collationFilter.value;
+                const formatValue = formatFilter.value;
                 const languageValue = languageFilter.value;
                 const availabiltyValue = availablilyFilter.value;
 
@@ -82,15 +82,15 @@
                         return book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             book.isbn.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            book.collation.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            book.format.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             book.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             book.language.toLowerCase().includes(searchTerm.toLowerCase());
                     }) : data;
 
-                    // Further filter based on category, collation, and language
+                    // Further filter based on category, format, and language
                     filteredBooks = filteredBooks.filter(book => {
                         return (categoryValue === '' || book.category === categoryValue) &&
-                            (collationValue === '' || book.collation === collationValue) &&
+                            (formatValue === '' || book.format === formatValue) &&
                             (languageValue === '' || book.language === languageValue) &&
                             (availabiltyValue === '' || (book.availableCopies !== 0 && availabiltyValue === 'Ja') ||
                                 (book.availableCopies == 0 && availabiltyValue === 'Nee'));
@@ -102,7 +102,7 @@
               <td> <a href = "book-details.html?id=${book.id}" > ${book.title} </a> </td>
               <td>${book.author}</td>
               <td>${book.isbn}</td>
-              <td>${book.collation}</td>   
+              <td>${book.format}</td>   
               <td>${book.category}</td>
               <td>${book.edition}</td> 
               <td>${book.language}</td>
@@ -115,7 +115,7 @@
                             <th>Titel</th>
                             <th>Auteur</th>
                             <th>Isbn</th>
-                            <th>Collatie</th>
+                            <th>Format</th>
                             <th>Categorie</th>
                             <th>Editie</th>
                             <th>Taal</th>
@@ -139,13 +139,13 @@
 
                     // Haal unieke waarden op voor de filteropties
                     const categoryValues = extractFilterValues(data, 'category');
-                    const collatieValues = extractFilterValues(data, 'collation');
+                    const formatValues = extractFilterValues(data, 'format');
                     const taalValues = extractFilterValues(data, 'language');
                     const beschikbaarValues = ['Ja', 'Nee']; // Beschikbaarheidsopties zijn vast voor nu
 
                     // Vul de select-elementen met filteropties
                     fillSelectOptions(categoryFilter, categoryValues);
-                    fillSelectOptions(collationFilter, collatieValues);
+                    fillSelectOptions(formatFilter, formatValues);
                     fillSelectOptions(languageFilter, taalValues);
                     fillSelectOptions(availablilyFilter, beschikbaarValues);
 
@@ -170,7 +170,7 @@
                 updateTable(searchTerm.value);
             });
 
-            collationFilter.addEventListener('input', function () {
+            formatFilter.addEventListener('input', function () {
                 updateTable(searchTerm.value);
             });
 
