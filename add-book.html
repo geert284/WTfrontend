@@ -83,6 +83,11 @@
             let editionInput = document.getElementById('edition-input').value;
             let authorInput = document.getElementById('author-input').value;
 
+            if(!Number.isInteger(Number(editionInput))) {
+                alert('Editie moet een integer zijn')
+                return;
+            }
+
             // Maak hier een javascript object aan
             let newBook = {
                 title: titleInput,
@@ -106,7 +111,7 @@
                 alert('Is goedgegaan');
                 
                 search();
-                
+                location.reload();
             })
             .catch(error => {
                 alert('Er is iets fouts gegaan');
