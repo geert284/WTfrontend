@@ -99,7 +99,7 @@
                     // Build the table
                     const tableHTML = filteredBooks.map(book => {
                         return `<tr>
-              <td>${book.title}</td>
+              <td> <a href = "book-details.html?id=${book.id}" > ${book.title} </a> </td>
               <td>${book.author}</td>
               <td>${book.isbn}</td>
               <td>${book.collation}</td>   
