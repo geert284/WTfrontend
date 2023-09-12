@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,5 +11,113 @@
 <body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <div data-component="header"></div>    
+
+<body>
+
+    <h1> Boek toevoegen </h1>
+    
+
+    <th>Title</th>
+    <input type="text" id="title-input"> <br>
+    <th>ISBN</th>
+    <input type="text" id="isbn-input"> <br>
+    <th>Category</th>
+    <input type="text" id="category-input"> <br>
+    <th>Format</th>
+    <input type="text" id="format-input"> <br>
+    <th>Language</th>
+    <input type="text" id="language-input"> <br>
+    <th>Edition</th>
+    <input type="text" id="edition-input"> <br>
+    <th>Author</th>
+    <input type="text" id="author-input"> <br>
+
+    <button type="button" onclick="createBook()">Opslaan</button>
+
+    
+    
+    <script>
+                function search() {
+            fetch('http://localhost:8080/book/all')   // Roep de url aan
+                .then(response => response.json())      // Zodra er antwoord is zet json om
+                .then(data => {                         // Data = array van persons
+                    console.log('Data', data);
+
+                    let booksHtml = '';
+
+                    data.forEach(book => {
+                        booksHtml += `
+                            <tr>
+                                <td>${book.id}</td>
+                                <td>${book.title}</td>
+                                <td>${book.isbn}</td> 
+                                <td>${book.category}</td>
+                                <td>${book.format}</td>
+                                <td>${book.language}</td>
+                                <td>${book.edition}</td>
+                                <td>${book.author}</td>                                 
+                            </tr>        
+                        `
+                    });
+                    
+                    document.getElementById('books-table').innerHTML = booksHtml;
+       
+
+                });
+
+            console.log('Na fetch')
+        }
+
+        function createBook() {
+            // Formulier uitlezen
+            let titleInput = document.getElementById('title-input').value;
+            let isbnInput = document.getElementById('isbn-input').value;
+            let categoryInput = document.getElementById('category-input').value;
+            let formatInput = document.getElementById('format-input').value;
+            let languageInput = document.getElementById('language-input').value;
+            let editionInput = document.getElementById('edition-input').value;
+            let authorInput = document.getElementById('author-input').value;
+
+            if(!Number.isInteger(Number(editionInput))) {
+                alert('Editie moet een integer zijn')
+                return;
+            }
+
+            // Maak hier een javascript object aan
+            let newBook = {
+                title: titleInput,
+                isbn: isbnInput,
+                category: categoryInput,
+                format: formatInput,
+                language: languageInput,
+                edition: editionInput,
+                author: authorInput,
+            }
+
+            fetch("http://localhost:8080/book/create", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newBook)
+                
+            })
+            .then(response => {
+                alert('Is goedgegaan');
+                
+                search();
+                location.reload();
+            })
+            .catch(error => {
+                alert('Er is iets fouts gegaan');
+            });
+        }
+
+        search();
+
+
+    </script>
+
+
 </body>
 </html>
