@@ -15,18 +15,6 @@
 
 
     <script>
-        function switchTable() {
-            var selectedTable = document.getElementById("book-options").value;
-            if (selectedTable == "Exemplaren") {
-                document.getElementById("bookadmin-table").style.display = "none";
-                document.getElementById("copyadmin-table").style.display = "table";
-            } else {
-                document.getElementById("copyadmin-table").style.display = "none";
-                document.getElementById("bookadmin-table").style.display = "table";
-            }
-            
-        }
-
         function searchBooksAdmin() {
             fetch('http://localhost:8080/book/all')
             .then(response => response.json())
@@ -40,7 +28,7 @@
                             <td>Categorie</td>
                             <td>Editie</td>
                             <td>Taal</td>
-                            <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-book.html';" class="green-button">+</button></td>
+                            <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-book.html';">+</button></td>
                         </tr>
                     `
                     data.forEach(book => {
@@ -51,7 +39,7 @@
                                 <td>${book.category}</td>
                                 <td>${book.edition}</td>
                                 <td>${book.language}</td>
-                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html';" class="green-button">Wijzig</button></td>
+                                <td style="text-align: right"><button type="button" onclick="getCopies(${book.id})">Klap uit</button></td>
                             </tr>
                         `
                     });
@@ -62,82 +50,65 @@
         }
         searchBooksAdmin();
 
-        function searchBookCopiesAdmin() {
-            fetch('http://localhost:8080/book/all')
-            .then(response => response.json())
-            .then(testdata => { 
-                    console.log('Test', testdata);
-            })
-
+        function getCopies(bookID) { // onclick=getCopies(${bookId})
             fetch('http://localhost:8080/bookcopy/all')
             .then(response => response.json())
             .then(data => { 
                     console.log('Data', data);
 
-                    let bookCopiesAdminHtml = `
-                        <tr id="table-header2">
-                            <td>Titel</td>
-                            <td>Schrijver</td>
-                            <td>Categorie</td>
-                            <td>Editie</td>
-                            <td>ID</td>
-                            <td>Beschikbaar</td>
+                    let booksAdminHtml = `
+                        <tr>
+                            <td>Exemplaar ID</td>
                             <td>Staat</td>
-                            <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-book.html';" class="green-button">+</button></td>
+                            <td>Beschikbaar</td>
+                            <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-book.html';">+</button></td>
                         </tr>
                     `
-                    data.forEach(bookCopy => {
-                        bookCopiesAdminHtml += `
+                    data.forEach(bookcopy => {
+                        let bookIDfromDB = bookcopy.bookId
+                        if (bookIDfromDB == bookID) {
+                            let icon = '';
+                            if (bookcopy.available) {
+                                icon = '<img src="check-circle.svg">';
+                            } else {
+                                icon = '<img src="circle.svg">'
+                            }
+                            booksAdminHtml += `
                             <tr>
-                                <td>${bookCopy.book}</td>
-                                <td>${bookCopy.book}</td>
-                                <td>${bookCopy.book}</td>
-                                <td>${bookCopy.book}</td>
-                                <td>${bookCopy.id}</td>
-                                <td>${bookCopy.available}</td>
-                                <td>${bookCopy.status}</td>
-                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html';" class="green-button">Wijzig</button></td>
+                                <td>${bookcopy.id}</td>
+                                <td>${bookcopy.status}</td>
+                                <td>${icon}</td>
+                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html';">Wijzig</button></td>
                             </tr>
                         `
+                        }
+                        
                     });
 
-                    document.getElementById('copyadmin-table').innerHTML = bookCopiesAdminHtml;
+                    document.getElementById('bookcopy-table').innerHTML = booksAdminHtml;
 
                 });
         }
-        searchBookCopiesAdmin();
+        // getCopies(2);
+
 
     </script>
 
     <div data-component="header"></div>
+
+    <!-- <button onclick="getCopies(2)"></button> -->
     
     <br><br><br>
-
-    <!-- 
-    <div class="sidebar">
-        <br><br><br><br>
-        <div style="font-weight: bold;">Filters</div>
-        <hr>
-        <div>Filter 1</div>
-        <div>Filter 2</div>
-        <div>Filter 3</div>
-    </div> -->
-
     
     <div class="body-text">
         <h2>Boeken beheren</h2>
         <h3 style="color: red;">Zoekbalk hier</h3>
         
-        <label for="book-options" style="margin-left: 68%;">Toon:</label>
-        <select id="book-options" onchange="switchTable()">
-            <option label="Boeken">Boeken</option>
-            <option label="Exemplaren">Exemplaren</option>
-        </select>
         <br><br>
         <table id="bookadmin-table"></table>
-        <table id="copyadmin-table" style="display: none;"></table>
-
         <br><br><br>
+
+        <table id="bookcopy-table"></table>
 
         
 
