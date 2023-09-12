@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 
     <script>
+        /* Get user data from database (account) and create and fill user table */
         function searchUsers() {
             fetch('http://localhost:8080/account/all')
             .then(response => response.json())
@@ -25,15 +26,22 @@
                             <td>Naam</td>
                             <td>Email</td>
                             <td>Admin</td>
+                            <td style="text-align: right"><button type="button">+</button></td>
                         </tr>
                     `
                     data.forEach(account => {
+                        let icon = '';
+                        if (account.admin) {
+                            icon = '<img src="check-circle.svg">';
+                        } else {
+                            icon = '<img src="circle.svg">'
+                        }
                         accountHtml += `
                             <tr>
                                 <td>${account.firstName} ${account.lastName}</td>
                                 <td>${account.email}</td>
-                                <td>${account.admin}</td>
-                                <td style="text-align: right"><button type="button" onclick="deleteConfirmMessage(${account.id})" class="green-button">Verwijder</button></td>
+                                <td>${icon}</td>
+                                <td style="text-align: right"><button type="button" onclick="deleteConfirmMessage(${account.id})" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Verwijder</button></td>
                             </tr>
                         `
                     });
@@ -43,31 +51,40 @@
                 });
         }
         searchUsers();
-
-        function deleteConfirmMessage(accountId) {
-                var x;
-                if (confirm("Weet u zeker dat u dit account wilt verwijderen? Bij het verwijderen van een account is het niet meer terug te leiden naar een lening of reservering.") == true) {
-                    x = "OK";
-                    // next function using accountId argument
-                } else {
-                    x = "Cancel";
-                }
-        }
     </script>
 
     <div data-component="header"></div>
-    
     <br><br><br>
-
-
     <h2>Gebruikers beheren</h2>
     <h3 style="color: red;">Zoekbalk hier</h3>
     <table id="user-table"></table>
 
-    <br><br><br>
-    <h4>Gebruiker toevoegen aan whitelist</h4>
-    <input style="margin-left: 224px; width: 300px;" type="text" placeholder="w.talent@gmail.com">
-    <button type="button" class="green-button">Toevoegen</button>
+    <!-- working inline block example -->
+    <!-- <div class="mb-3" style="display: inline-block;">
+        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+    </div>
+    <div class="mb-3" style="display: inline-block;">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+    </div> -->
+
+    <!-- Modal pop-up for deleting users -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Verwijder gebruiker</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Weet u zeker dat u deze gebruiker wilt verwijderen? Er zitten mogelijk nog leningen verbonden aan het account.</p>
+                        </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stoppen</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Doorgaan</button> <!-- add onclick event to remove user -->
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 </body>
