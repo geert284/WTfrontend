@@ -56,16 +56,62 @@
         </div>
 
         <div class="col-10">
-            <div >
-                <input style="display:inline-block" type="text" id="searchBar" placeholder="Zoek" class="form-control">
-                <button style="display:inline-block" type="button" onclick="updateTable(searchTerm.value)" class="btn btn-success col-2">Zoek een boek</button>
-            </div>          
-            
+            <div>
+                <div style="display: inline-block">
+                    <input style="display:inline-block" type="text" id="searchBar" placeholder="Zoek"
+                        class="form-control">
+                </div>
+                <div class="" style="display: inline-block">
+                    <button style="display:inline-block; width:150px; height: 35px;" type="button"
+                        onclick="updateTable(searchTerm.value)" class="btn btn-primary col-2">Zoek een boek</button>
+                </div>
+            </div>
+
             <h3>Boekenlijst</h3>
             <table class="table table-striped" id="booksTable"></table>
         </div>
     </div>
 
+
+    <!-- Modal pop-up for book details -->
+    <div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="bookModalLabel">Boek informatie</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Details</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal" data-bs-target="#confirmModal">Reserveren</button>
+                    <!-- add onclick event to reserve book -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pop-up for confirming reservation -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="confirmModalLabel">Boek informatie</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Weet je zeker dat je dit boek wil reserveren?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nee: annuleren</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="createReservation()">Ja: reserveren</button>
+                    <!-- add onclick event to reserve book -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
 
@@ -76,6 +122,7 @@
         const formatFilter = document.getElementById('formatFilter');
         const languageFilter = document.getElementById('languageFilter');
         const availablilyFilter = document.getElementById('availablilyFilter');
+        const booksModal = document.getElementById('bookModal');
         let booksData; // Hier bewaren we de originele boekgegevens
 
         // functie die JSON gegevens bijwerkt op basis van zoekbalk
@@ -114,7 +161,9 @@
                 // Build the table
                 const tableHTML = filteredBooks.map(book => {
                     return `<tr>
-              <td> <a href = "book-details.html?id=${book.id}" > ${book.title} </a> </td>
+              <td> <a href = "#" data-bs-id="${book.id}" data-bs-toggle="modal" data-bs-target="#bookModal"  data-bs-title="${book.title}" 
+                data-bs-author="${book.author}" data-bs-isbn="${book.isbn}" data-bs-format="${book.format}" data-bs-category="${book.category}" 
+                data-bs-edition="${book.edition}" data-bs-language="${book.language}" data-bs-availableCopies="${book.availableCopies}"> ${book.title} </td>
               <td>${book.author}</td>
               <td>${book.isbn}</td>
               <td>${book.format}</td>   
@@ -130,7 +179,7 @@
                             <th>Titel</th>
                             <th>Auteur</th>
                             <th>ISBN</th>
-                            <th>Format</th>
+                            <th>Soort</th>
                             <th>Categorie</th>
                             <th>Editie</th>
                             <th>Taal</th>
@@ -201,7 +250,7 @@
             updateTable(searchTerm.value);
         });
 
-        document.getElementById('searchBar').addEventListener('keyup', function(event) {
+        document.getElementById('searchBar').addEventListener('keyup', function (event) {
             if (event.key === 'Enter') {
                 updateTable(searchTerm.value);
             }
@@ -253,6 +302,51 @@
                 console.error('Error adding available copies to books:', error);
                 throw error;
             }
+        }
+       
+        //variable to save current book
+        let currentBookId = 0;
+
+        // Function that changes the content of the modal
+        booksModal.addEventListener('show.bs.modal', function (event) {
+            let link = event.relatedTarget;
+            let modalBody = booksModal.querySelector('.modal-body');
+
+            currentBookId = link.getAttribute('data-bs-id');
+            // setting this css style solving problem with new line in textContent
+            modalBody.setAttribute('style', 'white-space: pre;');
+
+            modalBody.textContent = "Titel: \t\t\t\t" + link.getAttribute('data-bs-title');
+            modalBody.textContent += "\r\nAuteur: \t\t\t\t" + link.getAttribute('data-bs-author');
+            modalBody.textContent += "\r\nIsbn: \t\t\t\t" + link.getAttribute('data-bs-isbn'); 
+            modalBody.textContent += "\r\nSoort: \t\t\t\t" + link.getAttribute('data-bs-format'); 
+            modalBody.textContent += "\r\nCategorie: \t\t\t" + link.getAttribute('data-bs-category'); 
+            modalBody.textContent += "\r\nEditie: \t\t\t\t" + link.getAttribute('data-bs-edition'); 
+            modalBody.textContent += "e\r\nTaal: \t\t\t\t" + link.getAttribute('data-bs-language'); 
+            modalBody.textContent += "\r\nBeschikbare kopieën: \t" + link.getAttribute('data-bs-availableCopies');              
+        });
+
+        function createReservation(){
+            // TODO:For now account id is hardcoded
+            // first bookcopy id where book 
+            let reservationDto = {
+                accountId: 1,
+                bookId: currentBookId,
+            }
+            fetch("http://localhost:8080/reservation/create", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reservationDto)
+                
+            })
+            .then(response => {
+                alert('Reservering gelukt!');                
+            })
+            .catch(error => {
+                alert('Er is iets fouts gegaan');
+            });
         }
 
     </script>
