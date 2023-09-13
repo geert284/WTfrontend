@@ -37,7 +37,7 @@
     
     
     <script>
-                function search() {
+        function search() {
             fetch('http://localhost:8080/book/all')   // Roep de url aan
                 .then(response => response.json())      // Zodra er antwoord is zet json om
                 .then(data => {                         // Data = array van persons
