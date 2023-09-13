@@ -26,24 +26,26 @@
                             <td>Naam</td>
                             <td>Email</td>
                             <td>Admin</td>
-                            <td style="text-align: right"><button type="button">+</button></td>
+                            <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">+</button></td>
                         </tr>
                     `
                     data.forEach(account => {
                         let icon = '';
-                        if (account.admin) {
-                            icon = '<img src="check-circle.svg">';
+                        if (account.admin) { // check if user in table is admin
+                            icon = '<img src="images/check-circle.svg">';
                         } else {
-                            icon = '<img src="circle.svg">'
+                            icon = '<img src="images/circle.svg">'
                         }
-                        accountHtml += `
-                            <tr>
-                                <td>${account.firstName} ${account.lastName}</td>
-                                <td>${account.email}</td>
-                                <td>${icon}</td>
-                                <td style="text-align: right"><button type="button" onclick="deleteConfirmMessage(${account.id})" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Verwijder</button></td>
-                            </tr>
-                        `
+                        if (account.firstName != null) { // check if account was made or just added to whitelist
+                            accountHtml += `
+                                <tr>
+                                    <td>${account.firstName} ${account.lastName}</td>
+                                    <td>${account.email}</td>
+                                    <td>${icon}</td>
+                                    <td style="text-align: right"><button type="button" onclick="deleteConfirmMessage(${account.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Verwijder</button></td>
+                                </tr>
+                            `
+                        }
                     });
 
                     document.getElementById('user-table').innerHTML = accountHtml;
@@ -51,36 +53,92 @@
                 });
         }
         searchUsers();
+
+        /* Check if submitted e-mail adress is from WT; then they can assign admin role */
+        function emailCheck() {
+            if (!document.getElementById("emailField").value.endsWith("@workingtalent.nl") && (document.getElementById("adminCheck").checked)) {
+                document.getElementById("alertSpan").style.display = "block";
+                document.getElementById("addUser").className = "btn btn-success disabled";
+            } else {
+                document.getElementById("alertSpan").style.display = "none";
+                document.getElementById("addUser").className = "btn btn-success";
+            }
+        }
+
+        /* Add user to database (whitelist) */
+        function addUserToDB() {
+            let emailInput = document.getElementById("emailField").value;
+            let adminInput = document.getElementById("adminCheck").checked;
+
+            let newAccount = {
+                email: emailInput,
+                admin: adminInput
+            }
+
+            fetch("http://localhost:8080/account/create", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newAccount)
+                
+            })
+            .then(response => {                
+                search();
+                location.reload();
+            });
+        }
+
     </script>
 
     <div data-component="header"></div>
     <br><br><br>
     <h2>Gebruikers beheren</h2>
-    <h3 style="color: red;">Zoekbalk hier</h3>
     <table id="user-table"></table>
-
-    <!-- working inline block example -->
-    <!-- <div class="mb-3" style="display: inline-block;">
-        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-    </div>
-    <div class="mb-3" style="display: inline-block;">
-        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-    </div> -->
 
     <!-- Modal pop-up for deleting users -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Verwijder gebruiker</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Gebruiker verwijderen</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <p>Weet u zeker dat u deze gebruiker wilt verwijderen? Er zitten mogelijk nog leningen verbonden aan het account.</p>
                         </div>
                     <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stoppen</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Doorgaan</button> <!-- add onclick event to remove user -->
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="removeUser">Verwijderen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pop-up for adding users -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addUserModalLabel">Gebruiker toevoegen</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Voer een e-mailadres in:</p>
+                            <input type="email" class="form-control" id="emailField" placeholder="w.talent@workingtalent.nl" onkeyup="emailCheck()">
+                            <br>
+                            <input class="form-check-input mt-0" type="checkbox" value="" aria-label="adminCheck" id="adminCheck" onchange="emailCheck()">
+                            <label for="adminCheck">Maak admin</label>
+                            <br><br>
+                            <span style="display: none;" id="alertSpan">
+                                <div class="alert alert-danger" role="alert">
+                                    Alleen gebruikers met een Working Talent e-mailadres mogen admin worden!
+                                </div>
+                            </span>
+                        </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="addUser" onclick="addUserToDB()">Toevoegen</button>
                 </div>
             </div>
         </div>
