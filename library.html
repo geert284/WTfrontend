@@ -56,20 +56,42 @@
         </div>
 
         <div class="col-10">
-            <div >
+            <div>
                 <div style="display: inline-block">
-                    <input style="display:inline-block" type="text" id="searchBar" placeholder="Zoek" class="form-control">
+                    <input style="display:inline-block" type="text" id="searchBar" placeholder="Zoek"
+                        class="form-control">
                 </div>
                 <div class="" style="display: inline-block">
-                    <button style="display:inline-block; width:150px; height: 35px;" type="button" onclick="updateTable(searchTerm.value)" class="btn btn-primary col-2">Zoek een boek</button>
+                    <button style="display:inline-block; width:150px; height: 35px;" type="button"
+                        onclick="updateTable(searchTerm.value)" class="btn btn-primary col-2">Zoek een boek</button>
                 </div>
-            </div>          
-            
+            </div>
+
             <h3>Boekenlijst</h3>
             <table class="table table-striped" id="booksTable"></table>
         </div>
     </div>
 
+
+    <!-- Modal pop-up for deleting users -->
+    <div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="bookModalLabel">Boek informatie</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Details</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Stoppen</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Doorgaan</button>
+                    <!-- add onclick event to remove user -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
 
@@ -80,6 +102,7 @@
         const formatFilter = document.getElementById('formatFilter');
         const languageFilter = document.getElementById('languageFilter');
         const availablilyFilter = document.getElementById('availablilyFilter');
+        const booksModal = document.getElementById('bookModal');
         let booksData; // Hier bewaren we de originele boekgegevens
 
         // functie die JSON gegevens bijwerkt op basis van zoekbalk
@@ -118,7 +141,7 @@
                 // Build the table
                 const tableHTML = filteredBooks.map(book => {
                     return `<tr>
-              <td> <a href = "book-details.html?id=${book.id}" > ${book.title} </a> </td>
+              <td> <a href = "#" data-id="${book.id}" data-bs-toggle="modal" data-bs-target="#bookModal"> ${book.title} </td>
               <td>${book.author}</td>
               <td>${book.isbn}</td>
               <td>${book.format}</td>   
@@ -205,7 +228,7 @@
             updateTable(searchTerm.value);
         });
 
-        document.getElementById('searchBar').addEventListener('keyup', function(event) {
+        document.getElementById('searchBar').addEventListener('keyup', function (event) {
             if (event.key === 'Enter') {
                 updateTable(searchTerm.value);
             }
@@ -258,6 +281,17 @@
                 throw error;
             }
         }
+
+       
+        booksModal.addEventListener('shown.bs.modal', function (event) {
+            let link = $(event.relatedTarget) // Link that triggered the modal
+            let id = link.data('id') // Extract info from data-* attributes
+            console.log(id);
+
+            let modal = $(this)
+            modal.find('.modal-body').text("Boek id is " + id)
+            modal.find('.modal-body input').val(id)
+        })
 
     </script>
 
