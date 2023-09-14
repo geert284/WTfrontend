@@ -68,9 +68,11 @@
         /* Add user to database (whitelist) */
         function addUserToDB() {
             let emailInput = document.getElementById("emailField").value;
+            let passwordInput = document.getElementById("passwordField").value;
             let adminInput = document.getElementById("adminCheck").checked;
 
             let newAccount = {
+                password: passwordInput,
                 email: emailInput,
                 admin: adminInput
             }
@@ -85,7 +87,6 @@
             })
             .then(response => {                
                 search();
-                location.reload();
             });
         }
 
@@ -126,6 +127,8 @@
                         <div class="modal-body">
                             <p>Voer een e-mailadres in:</p>
                             <input type="email" class="form-control" id="emailField" placeholder="w.talent@workingtalent.nl" onkeyup="emailCheck()">
+                            <br>
+                            <input type="password" class="form-control" id="passwordField" placeholder="">
                             <br>
                             <input class="form-check-input mt-0" type="checkbox" value="" aria-label="adminCheck" id="adminCheck" onchange="emailCheck()">
                             <label for="adminCheck">Maak admin</label>
