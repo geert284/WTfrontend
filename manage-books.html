@@ -39,7 +39,10 @@
                                 <td>${book.category}</td>
                                 <td>${book.edition}</td>
                                 <td>${book.language}</td>
-                                <td style="text-align: right"><button type="button" class="btn btn-success" onclick="getCopies(${book.id})">Klap uit</button></td>
+
+                                <td style="text-align: right"><button type="button" onclick="getCopies(${book.id})">Klap uit</button></td>
+                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html';" class="green-button">Wijzig</button></td>
+                                <td><button onclick="deleteBook(${book.id})">Boek verwijderen</button></td>
                             </tr>
                         `
                     });
@@ -89,6 +92,39 @@
 
                 });
         }
+
+
+        function deleteBook(bookId) {
+            var confirmed = confirm("Are you sure you want to delete this book?");
+
+            if (confirmed) {
+                var xhr = new XMLHttpRequest();
+
+                xhr.open('POST', 'http://localhost:8080/book/delete/' + bookId, true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+
+                var deleteBookDto = { id: bookId };
+
+
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        alert('Book deleted successfully');
+
+                        // Optionally, you can update the UI to remove the deleted book
+                    } else {
+                        alert('Error deleting book: ' + xhr.statusText);
+                    }
+                };
+
+                xhr.send(JSON.stringify(deleteBookDto));
+                
+                location.reload;
+                
+            }
+        }
+
+        // getCopies(2);
+
 
 
     </script>
