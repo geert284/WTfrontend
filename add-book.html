@@ -37,36 +37,7 @@
     
     
     <script>
-        function search() {
-            fetch('http://localhost:8080/book/all')   // Roep de url aan
-                .then(response => response.json())      // Zodra er antwoord is zet json om
-                .then(data => {                         // Data = array van persons
-                    console.log('Data', data);
-
-                    let booksHtml = '';
-
-                    data.forEach(book => {
-                        booksHtml += `
-                            <tr>
-                                <td>${book.id}</td>
-                                <td>${book.title}</td>
-                                <td>${book.isbn}</td> 
-                                <td>${book.category}</td>
-                                <td>${book.format}</td>
-                                <td>${book.language}</td>
-                                <td>${book.edition}</td>
-                                <td>${book.author}</td>                                 
-                            </tr>        
-                        `
-                    });
-                    
-                    document.getElementById('books-table').innerHTML = booksHtml;
-       
-
-                });
-
-            console.log('Na fetch')
-        }
+        
 
         function createBook() {
             // Formulier uitlezen
@@ -104,16 +75,15 @@
             })
             .then(response => {
                 alert('Is goedgegaan');
-                
-                search();
                 location.reload();
             })
             .catch(error => {
                 alert('Er is iets fouts gegaan');
             });
+            location.reload();
         }
+        
 
-        search();
 
 
     </script>
