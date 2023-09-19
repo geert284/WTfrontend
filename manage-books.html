@@ -41,18 +41,26 @@
                                 <td>${book.language}</td>
 
                                 <td style="text-align: right"><button type="button" onclick="getCopies(${book.id})">Klap uit</button></td>
-                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html';" class="green-button">Wijzig</button></td>
-                                <td><button onclick="deleteBook(${book.id})">Boek verwijderen</button></td>
+                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html?id=${book.id}';" class="green-button">Wijzig</button></td> 
+                                 
                             </tr>
                         `
+                        /* <td><button onclick="deleteBook(${book.id})">Boek verwijderen</button></td> */
                     });
 
                     document.getElementById('bookadmin-table').innerHTML = booksAdminHtml;
 
                 });
         }
+        
         searchBooksAdmin();
 
+        function redirectToAnotherPage(bookId) {
+
+            window.location.href = 'adjust-book.html?bookId=${bookId}'
+        }
+        
+        
         function getCopies(bookID) { // onclick=getCopies(${bookId})
             fetch('http://localhost:8080/bookcopy/all')
             .then(response => response.json())
