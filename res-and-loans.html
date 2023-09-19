@@ -82,7 +82,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="resModalLabel">Lening voltooien</h1>
+          <h1 class="modal-title fs-5" id="resModalLabel">Reservering voltooien</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -91,8 +91,8 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
-            data-bs-target="#confirmModal" onclick="finishReservation()">Lening voltooien</button>
-          <!-- add onclick event to reserve book -->
+            data-bs-target="#confirmModal" onclick="finishReservation()">Reservering voltooien</button>
+          <!-- add onclick event  -->
         </div>
       </div>
     </div>
@@ -113,7 +113,7 @@
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
             data-bs-target="#confirmModal" onclick="finishLoan()">Lening voltooien</button>
-          <!-- add onclick event to reserve book -->
+          <!-- add onclick event -->
         </div>
       </div>
     </div>
@@ -127,19 +127,24 @@
     const historyTableRes = document.getElementById('historyTableRes');
     const historyTableLoans = document.getElementById('historyTableLoans');
     const loanModal = document.getElementById('loanModal');
+    const resModal = document.getElementById('resModal');
 
     function createReservationTable() {
       fetch('http://localhost:8080/reservation/unprocessed')
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(reservation => {
+            const tagNumber = reservation.tagNumber !== 0 ? reservation.tagNumber : 'N/A'; // Check if tagNumber is not equal to 0
+            const button = reservation.available ? `<button class="" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
+                data-bs-title="${reservation.title}" data-bs-name="${reservation.accountName}" data-bs-id="${reservation.id}"> Boek uitlenen </button>`
+                : " "
             return `<tr>
               <td>${reservation.title} </td>
               <td>${reservation.accountName}</td>
-              <td>${reservation.tagNumber}</td>
+              <td>${tagNumber}</td> <!-- Display reservation.tagNumber or 'N/A' -->
               <td>${reservation.reservationDate}</td>
               <td>${reservation.available}</td>
-              <td><button class="" type="button" class="btn btn-success"> Boek uitlenen </button></td>
+              <td>${button}</td>
           </tr>`;
           }).join('');
 
@@ -236,15 +241,26 @@
     createReservationTable();
     createLoansTable();
 
-
     let currentLoanId = 0;
+    let currentResId = 0;
+    // Function that changes the content of the modal
+    resModal.addEventListener('show.bs.modal', function (event) {
+      let link = event.relatedTarget;
+      let modalBody = resModal.querySelector('.modal-body');
+
+      currentResId = link.getAttribute('data-bs-id');
+      modalBody.setAttribute('style', 'white-space: pre;');
+
+      modalBody.textContent = "Titel: \t\t" + link.getAttribute('data-bs-title');
+      modalBody.textContent += "\r\nNaam lener: \t" + link.getAttribute('data-bs-name');
+    });
+
     // Function that changes the content of the modal
     loanModal.addEventListener('show.bs.modal', function (event) {
       let link = event.relatedTarget;
       let modalBody = loanModal.querySelector('.modal-body');
 
       currentLoanId = link.getAttribute('data-bs-id');
-      console.log(currentLoanId);
 
       modalBody.setAttribute('style', 'white-space: pre;');
 
@@ -254,19 +270,19 @@
 
     function finishReservation() {
 
-      let finishLoanDto = {
-        loanId: currentLoanId,
+      let CreateLoanFromReservationDto = {
+        reservationId: currentResId,
       }
-      fetch("http://localhost:8080/loan/finish", {
+      fetch("http://localhost:8080/loan/fromres", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(finishLoanDto)
+        body: JSON.stringify(CreateLoanFromReservationDto)
 
       })
         .then(response => {
-          alert('Lening voltooid');
+          alert('Boek uitlenen gelukt!');
         })
         .catch(error => {
           alert('Er is iets fouts gegaan');
