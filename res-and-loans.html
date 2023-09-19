@@ -77,6 +77,27 @@
     </div>
   </div>
 
+  <!-- Modal pop-up for reservation finalisation confirmation -->
+  <div class="modal fade" id="resModal" tabindex="-1" aria-labelledby="resModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="resModalLabel">Lening voltooien</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Details</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
+            data-bs-target="#confirmModal" onclick="finishReservation()">Lening voltooien</button>
+          <!-- add onclick event to reserve book -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal pop-up for loan finalisation confirmation -->
   <div class="modal fade" id="loanModal" tabindex="-1" aria-labelledby="loanModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -91,7 +112,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
-            data-bs-target="#confirmModal" onclick="finishReservation()">Lening voltooien</button>
+            data-bs-target="#confirmModal" onclick="finishLoan()">Lening voltooien</button>
           <!-- add onclick event to reserve book -->
         </div>
       </div>
@@ -232,6 +253,27 @@
     });
 
     function finishReservation() {
+
+      let finishLoanDto = {
+        loanId: currentLoanId,
+      }
+      fetch("http://localhost:8080/loan/finish", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(finishLoanDto)
+
+      })
+        .then(response => {
+          alert('Lening voltooid');
+        })
+        .catch(error => {
+          alert('Er is iets fouts gegaan');
+        });
+    }
+
+    function finishLoan() {
 
       let finishLoanDto = {
         loanId: currentLoanId,
