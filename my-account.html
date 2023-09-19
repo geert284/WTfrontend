@@ -7,26 +7,54 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
 </head>
-<body>
+<body onload="showInfo()">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    
+    <script>
+
+        function saveInfo() {
+            // if fields are filled out
+            let accountInfo = {
+                firstName: document.getElementById('firstNameInput').value,
+                lastName: document.getElementById('lastNameInput').value,
+                password: document.getElementById('newPassword').value,
+            }
+
+            fetch(`http://localhost:8080/account/saveInfo/${localStorage.getItem('WT_ID')}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(accountInfo)
+            })
+            document.forms['myForm'].reset();
+        }
+
+        function showInfo() {
+            document.getElementById("firstNameInput").value = localStorage.getItem('WT_FIRSTNAME');
+            document.getElementById("lastNameInput").value = localStorage.getItem('WT_LASTNAME');
+        }
+
+    </script>
+    
     <div data-component="header"></div>
     <h2>Mijn gegevens</h2>
     <br><br>
 
     <p style="font-weight: bold;">Persoonsgegevens</p>
-    <th>Voornaam</th>
-    <input type="text" id="title-input"> <br>
-    <th>Achternaam</th>
-    <input type="text" id="isbn-input"> <br>
-    <br>
+    <form id="myForm">
+        <th>Voornaam</th>
+        <input type="text" id="firstNameInput"> <br>
+        <th>Achternaam</th>
+        <input type="text" id="lastNameInput"> <br>
+        <br>
 
-    <p style="font-weight: bold;">Wachtwoord instellen</p>
-    <th>Nieuw wachtwoord</th>
-    <input type="text" id="format-input"> <br>
-    <th>Bevestiging nieuw wachtwoord</th>
-    <input type="text" id="language-input"> <br>
-    <br>
-    <button type="button" class="btn btn-success">Opslaan</button>
+        <p style="font-weight: bold;">Wachtwoord instellen</p>
+        <th>Nieuw wachtwoord</th>
+        <input type="password" id="newPassword"> <br>
+        <br>
+    </form>
+    <button type="button" class="btn btn-success" onclick="saveInfo()">Opslaan</button>
 
 </body>
 </html>
