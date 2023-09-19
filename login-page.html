@@ -17,19 +17,100 @@
             </div>
             <form>
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">E-mailadres</label>
-                <input type="email" class="form-control"  id="exampleInputEmail1" style="width: 300px;">
+                <label for="emailInput" class="form-label">E-mailadres</label>
+                <input type="email" class="form-control"  id="emailInput" style="width: 300px;">
             </div>
             <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Wachtwoord</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" style="width: 300px;">
+                <label for="passwordInput" class="form-label">Wachtwoord</label>
+                <input type="password" class="form-control" id="passwordInput" style="width: 300px;">
             </div>
-            <button type="button" class="btn btn-success">Inloggen</button>
-            <button type="button" class="btn btn-success" onclick="location.href='register.html'">Registreren</button>
+            <span  style="display: none;" id="alertSpanPassword">
+                <div class="alert alert-danger" role="alert" style="width: 300px;">
+                    Onjuiste e-mail en wachtwoord combinatie
+                </div>
+            </span>
+            <span style="display: none;" id="alertSpanEmail">
+                <div class="alert alert-danger" role="alert" style="width: 300px;">
+                    Dit e-mailadres is niet bekend bij Working Talent
+                </div>
+            </span>
+            <span style="display: none;" id="alertSpanFill">
+                <div class="alert alert-danger" role="alert" style="width: 300px;">
+                    Vul beide invoervelden in
+                </div>
+            </span>
+            <button type="button" class="btn btn-success" onclick="login()">Inloggen</button>
             </form>
         </div>
     </div>
 
+    <script>
+
+        function spanReset() {
+            document.getElementById("alertSpanFill").style.display = "none";
+            document.getElementById("alertSpanPassword").style.display = "none";
+            document.getElementById("alertSpanEmail").style.display = "none";
+        }
+
+        function login() {
+            spanReset();
+            if (!document.getElementById('emailInput').value.length || !document.getElementById('passwordInput').value.length) {
+                document.getElementById("alertSpanFill").style.display = "block";
+            } else {
+                let loginDto = {
+                email: document.getElementById('emailInput').value,
+                password: document.getElementById('passwordInput').value
+                }
+
+                fetch('http://localhost:8080/account/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(loginDto)
+                })
+                .then(response => {
+                    return response.json();
+                })
+                .then(responseDto => {
+                    if (responseDto.success) {
+                        localStorage.setItem('WT_TOKEN', responseDto.token);
+                        localStorage.setItem('WT_LASTNAME', responseDto.lastName);
+                        localStorage.setItem('WT_FIRSTNAME', responseDto.firstName);
+                        localStorage.setItem('WT_ID', responseDto.id);
+                        window.location.href = "home-page.html"
+
+                    } else {
+                        checkEmail();
+                    }
+                })
+                .catch(error => {
+                    alert('Er is iets fouts gegaan');
+                });
+            }
+            
+        }
+
+        function checkEmail() {
+            spanReset();
+            let emailCheck;
+            let emailInput = document.getElementById("emailInput").value;
+            fetch('http://localhost:8080/account/all')
+            .then(response => response.json())
+            .then(data => { 
+                console.log(data)
+                const check = obj => obj.email === emailInput;
+                emailCheck = data.some(check)
+                if (emailCheck) {
+                    document.getElementById("alertSpanPassword").style.display = "block";
+                } else {
+                    document.getElementById("alertSpanEmail").style.display = "block";
+                }
+
+            });
+        }
+
+    </script>
 
 
 </body>

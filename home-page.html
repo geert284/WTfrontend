@@ -9,16 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
 </head>
-<body>
+<body onload="openModal()">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-    <div data-component="header"></div>
-    
-    <h2>Home pagina</h2>
-    <h3>Welkom !!!!</h3>
-
-    <input type="text" id="searchBar" placeholder="Zoek een boek">
-    <button type="button" class="btn btn-success col-2" onclick="navigateToBooks()">Zoek</button>
-
     <script>
         function navigateToBooks() {
             const searchTerm = document.getElementById('searchBar').value;
@@ -30,7 +22,83 @@
                 navigateToBooks();
             }
         });
+
+        // Checks if all input fields are filled out, otherwise disables button
+        function checkPersonalInfo() {
+            let firstName = document.getElementById('firstNameInput').value;
+            let lastName = document.getElementById('lastNameInput').value;
+            let newPassword = document.getElementById('newPassword').value;
+            if ((!(firstName.length == 0) && !(lastName.length == 0) && !(newPassword.length == 0))) {
+                document.getElementById("saveInfo").className = "btn btn-success";
+            } else {
+                document.getElementById("saveInfo").className = "btn btn-success disabled";
+            }
+        }
+
+        // Adds personal info and new password to database
+        function savePersonalInfo() {
+            let accountInfo = {
+                firstName: document.getElementById('firstNameInput').value,
+                lastName: document.getElementById('lastNameInput').value,
+                password: document.getElementById('newPassword').value,
+            }
+
+            fetch(`http://localhost:8080/account/saveInfo/${localStorage.getItem('WT_ID')}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(accountInfo)
+            })
+
+        }
+
+        // Opens personal info modal if user is registering
+        function openModal() {
+            if (localStorage.getItem('WT_LASTNAME') == 'null') {
+                let myModal = new bootstrap.Modal(document.getElementById('changePasswordModal'), {});
+                myModal.show();  
+            }
+        }
+
     </script>
+    
+    <div data-component="header"></div>
+    
+    <h2>Home pagina</h2>
+    <h3>Welkom !!!!</h3>
+
+    <input type="text" id="searchBar" placeholder="Zoek een boek">
+    <button type="button" class="btn btn-success col-2" onclick="navigateToBooks()">Zoek</button>
+
+    <!-- Modal for submitting personal info and new password -->
+    <div class="modal fade" id="changePasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="changePasswordModalLabel">Vul je persoonsgegevens in</h1>
+                        </div>
+                        <div class="modal-body">
+                            <label for="firstNameInput" class="col-form-label">Voornaam:</label>
+                            <input type="text" class="form-control" id="firstNameInput" onkeyup="checkPersonalInfo()">
+                            <label for="lastNameInput" class="col-form-label">Achternaam:</label>
+                            <input type="text" class="form-control" id="lastNameInput" onkeyup="checkPersonalInfo()">
+                            <label for="newPassword" class="col-form-label">Nieuw wachtwoord:</label>
+                            <input type="password" class="form-control" id="newPassword" onkeyup="checkPersonalInfo()">
+                            <div id="emailHelp" class="form-text">Gebruik een wachtwoord van minstens 8 karakters met minstens 1 hoofdletter, 1 speciaal teken en 1 cijfer.</div>
+                            <!-- <span style="display: none;" id="alertSpan">
+                                <div class="alert alert-danger" role="alert">
+                                    Dit wachtwoord voldoet niet aan de eisen
+                                </div>
+                            </span> -->
+                        </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-success disabled" data-bs-dismiss="modal" id="saveInfo" onclick="savePersonalInfo()">Opslaan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
 </body>
 </html>
