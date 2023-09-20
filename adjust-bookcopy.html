@@ -1,0 +1,99 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/common.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <div data-component="header"></div>    
+
+
+    <h1> Boekkopie update </h1>
+
+    <form id="updateBookForm">
+        <th>Beschikbaar</th>
+        <input type="text" id="available-input" placeholder="Available"> <br>
+        <th>Status</th>
+        <input type="text" id="status-input" placeholder="Status"> <br>
+        <th>Buiten gebruik</th>
+        <input type="text" id="outOfUse-input" placeholder="OutOfUse"> <br>
+        <button type="button" class="btn btn-success" onclick="updateBookCopy()">Opslaan</button>
+        <br>
+        <br>
+        <br>
+        <td style="text-align: right"><button type="button" class="btn btn-success" onclick="window.location.href='manage-books.html';">Boeken beheren</button></td>
+        
+    </form>
+
+    <script>
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get('id');
+        
+
+        if (bookId) {
+
+            //console.log(bookId);
+            fetch(`http://localhost:8080/bookcopy/${bookId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const available = data.available;
+                    const status = data.status;
+                    const outOfUse = data.outOfUse;
+
+                    const avaiableInput = document.getElementById('available-input');
+                    const statusInput = document.getElementById('status-input');
+                    const outOfUseInput = document.getElementById('outOfUse-input');
+
+                    avaiableInput.value = available; 
+                    statusInput.value = status;
+                    outOfUseInput.value = outOfUse;
+
+                })
+                .catch(error => console.error('Error:', error));
+        } else {
+            console.error('No bookId provided in the URL');
+        }
+
+        
+        
+        function updateBookCopy() {
+            let availableInputValue = document.getElementById('available-input').value;
+            let statusInputValue = document.getElementById('status-input').value;
+            let outOfUseInputValue = document.getElementById('outOfUse-input').value;
+
+            // Maak hier een javascript object aan
+            let newBookCopy = {
+                available: availableInputValue,
+                status: statusInputValue,
+                outOfUse: outOfUseInputValue,
+            }
+
+            console.log(bookId);
+            fetch(`http://localhost:8080/bookcopy/update/${bookId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newBookCopy)
+            })
+            .then(response => {
+                alert('Is goedgegaan');
+
+            })
+            .catch(error => {
+                alert('Er is iets fouts gegaan');
+            });
+
+        }
+
+
+    </script>
+
+
+</body>
+</html>
