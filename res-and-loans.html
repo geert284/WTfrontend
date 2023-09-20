@@ -16,7 +16,9 @@
     crossorigin="anonymous"></script>
   <div data-component="header"></div>
 
+  <br>  
   <h2>Reserveringen en leningen beheren</h2>
+  
 
   <div class="accordion" id="reservationsAccordion">
     <div class="accordion-item">
@@ -77,6 +79,48 @@
     </div>
   </div>
 
+  <!-- Modal pop-up for reservation finalisation confirmation -->
+  <div class="modal fade" id="resModal" tabindex="-1" aria-labelledby="resModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="resModalLabel">Reservering voltooien</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Details</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
+            data-bs-target="#confirmModal" onclick="finishReservation()">Reservering voltooien</button>
+          <!-- add onclick event  -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal pop-up for loan finalisation confirmation -->
+  <div class="modal fade" id="loanModal" tabindex="-1" aria-labelledby="loanModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="loanModalLabel">Lening voltooien</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Details</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
+            data-bs-target="#confirmModal" onclick="finishLoan()">Lening voltooien</button>
+          <!-- add onclick event -->
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <script>
 
@@ -84,18 +128,25 @@
     const loansTable = document.getElementById('loansTable');
     const historyTableRes = document.getElementById('historyTableRes');
     const historyTableLoans = document.getElementById('historyTableLoans');
+    const loanModal = document.getElementById('loanModal');
+    const resModal = document.getElementById('resModal');
 
     function createReservationTable() {
       fetch('http://localhost:8080/reservation/unprocessed')
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(reservation => {
+            const tagNumber = reservation.tagNumber !== 0 ? reservation.tagNumber : 'N/A'; // Check if tagNumber is not equal to 0
+            const button = reservation.available ? `<button class="" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
+                data-bs-title="${reservation.title}" data-bs-name="${reservation.accountName}" data-bs-id="${reservation.id}"> Boek uitlenen </button>`
+                : " "
             return `<tr>
               <td>${reservation.title} </td>
               <td>${reservation.accountName}</td>
-              <td>${reservation.tagNumber}</td>
+              <td>${tagNumber}</td> <!-- Display reservation.tagNumber or 'N/A' -->
               <td>${reservation.reservationDate}</td>
-              <td>${reservation.available}</td>   
+              <td>${reservation.available}</td>
+              <td>${button}</td>
           </tr>`;
           }).join('');
 
@@ -106,6 +157,7 @@
                             <th>Tag nummer</th>
                             <th>Reserverings datum</th>
                             <th>Boek beschikbaar</th>
+                            <th>Reservering voltooien</th>
                         </tr>${tableHTML}`;
         });
     };
@@ -120,6 +172,8 @@
               <td>${loan.name}</td>
               <td>${loan.tagNumber}</td>
               <td>${loan.loanDate}</td> 
+              <td><button class="" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#loanModal"
+                data-bs-title="${loan.title}" data-bs-name="${loan.name}" data-bs-id="${loan.loanId}"> Boek is ingeleverd </button></td>
           </tr>`;
           }).join('');
 
@@ -129,6 +183,7 @@
                             <th>Persoon</th>
                             <th>Tag nummer</th>
                             <th>Lenings datum</th>
+                            <th>Lening voltooien</th>
                         </tr>${tableHTML}`;
         });
     };
@@ -187,6 +242,75 @@
     createClosedLoansTable();
     createReservationTable();
     createLoansTable();
+
+    let currentLoanId = 0;
+    let currentResId = 0;
+    // Function that changes the content of the modal
+    resModal.addEventListener('show.bs.modal', function (event) {
+      let link = event.relatedTarget;
+      let modalBody = resModal.querySelector('.modal-body');
+
+      currentResId = link.getAttribute('data-bs-id');
+      modalBody.setAttribute('style', 'white-space: pre;');
+
+      modalBody.textContent = "Titel: \t\t" + link.getAttribute('data-bs-title');
+      modalBody.textContent += "\r\nNaam lener: \t" + link.getAttribute('data-bs-name');
+    });
+
+    // Function that changes the content of the modal
+    loanModal.addEventListener('show.bs.modal', function (event) {
+      let link = event.relatedTarget;
+      let modalBody = loanModal.querySelector('.modal-body');
+
+      currentLoanId = link.getAttribute('data-bs-id');
+
+      modalBody.setAttribute('style', 'white-space: pre;');
+
+      modalBody.textContent = "Titel: \t\t" + link.getAttribute('data-bs-title');
+      modalBody.textContent += "\r\nNaam lener: \t" + link.getAttribute('data-bs-name');
+    });
+
+    function finishReservation() {
+
+      let CreateLoanFromReservationDto = {
+        reservationId: currentResId,
+      }
+      fetch("http://localhost:8080/loan/fromres", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(CreateLoanFromReservationDto)
+
+      })
+        .then(response => {
+          alert('Boek uitlenen gelukt!');
+        })
+        .catch(error => {
+          alert('Er is iets fouts gegaan');
+        });
+    }
+
+    function finishLoan() {
+
+      let finishLoanDto = {
+        loanId: currentLoanId,
+      }
+      fetch("http://localhost:8080/loan/finish", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(finishLoanDto)
+
+      })
+        .then(response => {
+          alert('Lening voltooid');
+        })
+        .catch(error => {
+          alert('Er is iets fouts gegaan');
+        });
+    }
   </script>
 
 
