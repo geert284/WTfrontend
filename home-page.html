@@ -37,20 +37,47 @@
 
         // Adds personal info and new password to database
         function savePersonalInfo() {
-            let accountInfo = {
-                firstName: document.getElementById('firstNameInput').value,
-                lastName: document.getElementById('lastNameInput').value,
-                password: document.getElementById('newPassword').value,
+            document.getElementById("alertSpan").style.display = "none";
+            let password = document.getElementById('newPassword').value;
+            if (checkPassword(password)) {
+                let firstName = document.getElementById('firstNameInput').value;
+                let lastName = document.getElementById('lastNameInput').value;
+                localStorage.setItem('WT_FIRSTNAME', firstName);
+                localStorage.setItem('WT_LASTNAME', lastName); 
+                let accountInfo = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    password: password,
+                }
+
+                fetch(`http://localhost:8080/account/saveInfo/${localStorage.getItem('WT_ID')}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(accountInfo)
+                })
+                closeModal();
+            } else {
+                document.getElementById("alertSpan").style.display = "block";
             }
+        }
 
-            fetch(`http://localhost:8080/account/saveInfo/${localStorage.getItem('WT_ID')}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(accountInfo)
-            })
-
+        // Checks if submitted password meets criteria
+        function checkPassword(password) {
+            if (password.length < 8) {
+                return false;
+            }
+            if (!/[A-Z]/.test(password)) {
+                return false;
+            }
+            if (!/\d/.test(password)) {
+                return false;
+            }
+            if (!/[!@#$%^&*(),.?"_:{}|<>]/.test(password)) {
+                return false;
+            }
+            return true;
         }
 
         // Opens personal info modal if user is registering
@@ -59,6 +86,13 @@
                 let myModal = new bootstrap.Modal(document.getElementById('changePasswordModal'), {});
                 myModal.show();  
             }
+        }
+
+        // Closes register modal
+        function closeModal() {
+            var modal = document.getElementById('changePasswordModal');
+            var bsModal = bootstrap.Modal.getInstance(modal);
+            bsModal.hide();
         }
 
     </script>
@@ -86,14 +120,15 @@
                             <label for="newPassword" class="col-form-label">Nieuw wachtwoord:</label>
                             <input type="password" class="form-control" id="newPassword" onkeyup="checkPersonalInfo()">
                             <div id="emailHelp" class="form-text">Gebruik een wachtwoord van minstens 8 karakters met minstens 1 hoofdletter, 1 speciaal teken en 1 cijfer.</div>
-                            <!-- <span style="display: none;" id="alertSpan">
+                            <span style="display: none;" id="alertSpan">
+                                <br>
                                 <div class="alert alert-danger" role="alert">
                                     Dit wachtwoord voldoet niet aan de eisen
                                 </div>
-                            </span> -->
+                            </span>
                         </div>
                     <div class="modal-footer">
-                    <button type="button" class="btn btn-success disabled" data-bs-dismiss="modal" id="saveInfo" onclick="savePersonalInfo()">Opslaan</button>
+                    <button type="button" class="btn btn-success disabled" id="saveInfo" onclick="savePersonalInfo()">Opslaan</button>
                 </div>
             </div>
         </div>
