@@ -1,0 +1,130 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="js/common.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <div data-component="header"></div>    
+
+
+    <h1> Boek update </h1>
+
+    <form id="updateBookForm">
+        <th>Title</th>
+        <input type="text" id="title-input" placeholder="Title"> <br>
+        <th>ISBN</th>
+        <input type="text" id="isbn-input" placeholder="Isbn"> <br>
+        <th>Category</th>
+        <input type="text" id="category-input" placeholder="Category"> <br>
+        <th>Format</th>
+        <input type="text" id="format-input" placeholder="Format"> <br>
+        <th>Language</th>
+        <input type="text" id="language-input" placeholder="Language"> <br>
+        <th>Edition</th>
+        <input type="text" id="edition-input" placeholder="edition"> <br>
+        <th>Author</th>
+        <input type="text" id="author-input" placeholder="author"> <br>
+        <button type="button" class="btn btn-success" onclick="updateBook()">Opslaan</button>
+        
+    </form>
+
+    <script>
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get('id');
+        
+
+        if (bookId) {
+
+            //console.log(bookId);
+            fetch(`http://localhost:8080/book/${bookId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const title = data.title;
+                    const isbn = data.isbn;
+                    const category = data.category;
+                    const format = data.format;
+                    const language = data.language;
+                    const edition = data.edition;
+                    const author = data.author;
+
+                    const titleInput = document.getElementById('title-input');
+                    const isbnInput = document.getElementById('isbn-input');
+                    const categoryInput = document.getElementById('category-input');
+                    const formatInput = document.getElementById('format-input');
+                    const languageInput = document.getElementById('language-input');
+                    const editionInput = document.getElementById('edition-input');
+                    const authorInput = document.getElementById('author-input');
+
+
+                    titleInput.value = title; 
+                    isbnInput.value = isbn;
+                    languageInput.value = language;
+                    categoryInput.value = category;
+                    formatInput.value = format;
+                    editionInput.value = edition;
+                    authorInput.value = author;
+                })
+                .catch(error => console.error('Error:', error));
+        } else {
+            console.error('No bookId provided in the URL');
+        }
+
+        
+        
+        function updateBook() {
+            let titleInputValue = document.getElementById('title-input').value;
+            let isbnInputValue = document.getElementById('isbn-input').value;
+            let categoryInputValue = document.getElementById('category-input').value;
+            let formatInputValue = document.getElementById('format-input').value;
+            let languageInputValue = document.getElementById('language-input').value;
+            let editionInputValue = document.getElementById('edition-input').value;
+            let authorInputValue = document.getElementById('author-input').value;
+
+            if(!Number.isInteger(Number(editionInputValue))) {
+                alert('Editie moet een integer zijn')
+                return;
+            }
+
+            // Maak hier een javascript object aan
+            let newBook = {
+                title: titleInputValue,
+                isbn: isbnInputValue,
+                category: categoryInputValue,
+                format: formatInputValue,
+                language: languageInputValue,
+                edition: editionInputValue,
+                author: authorInputValue,
+            }
+
+            console.log(bookId);
+            fetch(`http://localhost:8080/book/update/${bookId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newBook)
+            })
+            .then(response => {
+                alert('Is goedgegaan');
+
+            })
+            .catch(error => {
+                alert('Er is iets fouts gegaan');
+            });
+
+
+        }
+
+
+
+
+
+    </script>
+</body>
+</html>

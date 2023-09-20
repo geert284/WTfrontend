@@ -5,25 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="mystyle.css">
+    <script src="js/common.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
 </head>
-<body>
-    <img src="WT-logo.png" width="216" height="56">
-    <button type="button" class="button-solid" onclick="window.location.href = 'home-page.html';">Home</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'library.html';">Bibliotheek</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'my-books.html';">Mijn boeken</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'res-and-loans.html';">Reserveringen en Leningen</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'manage-books.html';">Boeken beheren</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'manage-users.html';">Gebruikers beheren</button>
-    
-    <img src="account-logo.png" style="float:right; margin-right:20px; margin-top:40px;" width="20" height="20">
-    <button type="button" style="float:right; margin-right:10px; margin-top:43px;" class="button-solid" onclick="window.location.href = 'my-account.html';">Mijn account</button>
-    <h2>Home pagina</h2>
-    <h3>Welkom !!!!</h3>
-
-    <input type="text" id="searchBar" placeholder="Zoek een boek">
-    <button type="button" onclick="navigateToBooks()">Zoek</button>
-
+<body onload="openModal()">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <script>
         function navigateToBooks() {
             const searchTerm = document.getElementById('searchBar').value;
@@ -35,7 +22,118 @@
                 navigateToBooks();
             }
         });
+
+        // Checks if all input fields are filled out, otherwise disables button
+        function checkPersonalInfo() {
+            let firstName = document.getElementById('firstNameInput').value;
+            let lastName = document.getElementById('lastNameInput').value;
+            let newPassword = document.getElementById('newPassword').value;
+            if ((!(firstName.length == 0) && !(lastName.length == 0) && !(newPassword.length == 0))) {
+                document.getElementById("saveInfo").className = "btn btn-success";
+            } else {
+                document.getElementById("saveInfo").className = "btn btn-success disabled";
+            }
+        }
+
+        // Adds personal info and new password to database
+        function savePersonalInfo() {
+            document.getElementById("alertSpan").style.display = "none";
+            let password = document.getElementById('newPassword').value;
+            if (checkPassword(password)) {
+                let firstName = document.getElementById('firstNameInput').value;
+                let lastName = document.getElementById('lastNameInput').value;
+                localStorage.setItem('WT_FIRSTNAME', firstName);
+                localStorage.setItem('WT_LASTNAME', lastName); 
+                let accountInfo = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    password: password,
+                }
+
+                fetch(`http://localhost:8080/account/saveInfo/${localStorage.getItem('WT_ID')}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(accountInfo)
+                })
+                closeModal();
+            } else {
+                document.getElementById("alertSpan").style.display = "block";
+            }
+        }
+
+        // Checks if submitted password meets criteria
+        function checkPassword(password) {
+            if (password.length < 8) {
+                return false;
+            }
+            if (!/[A-Z]/.test(password)) {
+                return false;
+            }
+            if (!/\d/.test(password)) {
+                return false;
+            }
+            if (!/[!@#$%^&*(),.?"_:{}|<>]/.test(password)) {
+                return false;
+            }
+            return true;
+        }
+
+        // Opens personal info modal if user is registering
+        function openModal() {
+            if (localStorage.getItem('WT_LASTNAME') == 'null') {
+                let myModal = new bootstrap.Modal(document.getElementById('changePasswordModal'), {});
+                myModal.show();  
+            }
+        }
+
+        // Closes register modal
+        function closeModal() {
+            var modal = document.getElementById('changePasswordModal');
+            var bsModal = bootstrap.Modal.getInstance(modal);
+            bsModal.hide();
+        }
+
     </script>
+    
+    <div data-component="header"></div>
+    
+    <h2>Home pagina</h2>
+    <h3>Welkom !!!!</h3>
+
+    <input type="text" id="searchBar" placeholder="Zoek een boek">
+    <button type="button" class="btn btn-success col-2" onclick="navigateToBooks()">Zoek</button>
+
+    <!-- Modal for submitting personal info and new password -->
+    <div class="modal fade" id="changePasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="changePasswordModalLabel">Vul je persoonsgegevens in</h1>
+                        </div>
+                        <div class="modal-body">
+                            <label for="firstNameInput" class="col-form-label">Voornaam:</label>
+                            <input type="text" class="form-control" id="firstNameInput" onkeyup="checkPersonalInfo()">
+                            <label for="lastNameInput" class="col-form-label">Achternaam:</label>
+                            <input type="text" class="form-control" id="lastNameInput" onkeyup="checkPersonalInfo()">
+                            <label for="newPassword" class="col-form-label">Nieuw wachtwoord:</label>
+                            <input type="password" class="form-control" id="newPassword" onkeyup="checkPersonalInfo()">
+                            <div id="emailHelp" class="form-text">Gebruik een wachtwoord van minstens 8 karakters met minstens 1 hoofdletter, 1 speciaal teken en 1 cijfer.</div>
+                            <span style="display: none;" id="alertSpan">
+                                <br>
+                                <div class="alert alert-danger" role="alert">
+                                    Dit wachtwoord voldoet niet aan de eisen
+                                </div>
+                            </span>
+                        </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-success disabled" id="saveInfo" onclick="savePersonalInfo()">Opslaan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
 </body>
 </html>

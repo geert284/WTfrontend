@@ -1,23 +1,274 @@
-<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="mystyle.css">
+    <script src="js/common.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
 </head>
+
 <body>
-    <img src="WT-logo.png" width="216" height="56">
-    <button type="button" class="button-solid" onclick="window.location.href = 'home-page.html';">Home</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'library.html';">Bibliotheek</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'my-books.html';">Mijn boeken</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'res-and-loans.html';">Reserveringen en Leningen</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'manage-books.html';">Boeken beheren</button>
-    <button type="button" class="button-solid" onclick="window.location.href = 'manage-users.html';">Gebruikers beheren</button>
-    
-    <img src="account-logo.png" style="float:right; margin-right:20px; margin-top:40px;" width="20" height="20">
-    <button type="button" style="float:right; margin-right:10px; margin-top:43px;" class="button-solid" onclick="window.location.href = 'my-account.html';">Mijn account</button>
-    <h2>Mijn leningen en reserveringen</h2>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+    <div data-component="header"></div>
+
+    <br>
+
+    <h3>Mijn reserveringen en leningen</h3>
+    <div class="accordion" id="reservationsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne">
+                    Reserveringen
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                data-bs-parent="#reservationsAccordion">
+                <div class="accordion-body">
+                    <table class="table table-striped" id="reservationsTable"></table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Leningen
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                data-bs-parent="#reservationsAccordion">
+                <div class="accordion-body">
+                    <table class="table table-striped" id="loansTable"></table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Geschiedenis van reserveringen
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                data-bs-parent="#reservationsAccordion">
+                <div class="accordion-body">
+                    <table class="table table-striped" id="historyTableRes"></table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    Geschiedenis van leningen
+                </button>
+            </h2>
+            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                data-bs-parent="#reservationsAccordion">
+                <div class="accordion-body">
+                    <table class="table table-striped" id="historyTableLoans"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pop-up for reservation canceling confirmation -->
+    <div class="modal fade" id="resModal" tabindex="-1" aria-labelledby="resModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="resModalLabel">Reservering annuleren</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Details</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Nee </button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
+                        data-bs-target="#confirmModal" onclick="cancelReservation()"> Ja reservering annuleren</button>
+                    <!-- add onclick event  -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const reservationsTable = document.getElementById('reservationsTable');
+        const loansTable = document.getElementById('loansTable');
+        const historyTableRes = document.getElementById('historyTableRes');
+        const historyTableLoans = document.getElementById('historyTableLoans');
+        const loanModal = document.getElementById('loanModal');
+        const resModal = document.getElementById('resModal');
+
+        let resType = "res";
+        function createReservationTable() {
+            fetch(`http://localhost:8080/account/getReservations/${localStorage.getItem('WT_TOKEN')}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableHTML = data.map(reservation => {
+                        const tagNumber = reservation.tagNumber !== 0 ? reservation.tagNumber : 'N/A'; // Check if tagNumber is not equal to 0
+                        resType = reservation.tagNumber !== 0 ? "res" : "aRes";
+                        return `<tr>
+                  <td>${reservation.title} </td>
+                  <td>${tagNumber}</td> <!-- Display reservation.tagNumber or 'N/A' -->
+                  <td>${reservation.reservationDate}</td>
+                  <td>${reservation.available}</td>
+                  <td><button class="" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
+                    data-bs-title="${reservation.title}" data-bs-id="${reservation.id}"> Annuleren </button></td>
+              </tr>`;
+                    }).join('');
+
+                    // Add the table to the HTML
+                    reservationsTable.innerHTML = `<tr>
+                                <th>Titel</th>
+                                <th>Boek     nummer</th>
+                                <th>Reserverings datum</th>
+                                <th>Boek beschikbaar</th>
+                                <th>Reservering annuleren</th>
+                            </tr>${tableHTML}`;
+                });
+        };
+
+        function createLoansTable() {
+            fetch('')
+                .then(response => response.json())
+                .then(data => {
+                    const tableHTML = data.map(loan => {
+                        return `<tr>
+                  <td>${loan.title} </td>
+                  <td>${loan.tagNumber}</td>
+                  <td>${loan.loanDate}</td> 
+              </tr>`;
+                    }).join('');
+
+                    // Add the table to the HTML
+                    loansTable.innerHTML = `<tr>
+                                <th>Titel</th>
+                                <th>Tag nummer</th>
+                                <th>Lenings datum</th>
+                            </tr>${tableHTML}`;
+                });
+        };
+
+        function createReservationHistoryTable() {
+            fetch('')
+                .then(response => response.json())
+                .then(data => {
+                    const tableHTML = data.map(reservation => {
+                        return `<tr>
+                  <td>${reservation.title} </td>
+                  <td>${reservation.accountName}</td>
+                  <td>${reservation.tagNumber}</td>
+                  <td>${reservation.reservationDate}</td>
+                  <td>${reservation.type}</td>   
+              </tr>`;
+                    }).join('');
+
+                    // Add the table to the HTML
+                    historyTableRes.innerHTML = `<tr>
+                                <th>Titel</th>
+                                <th>Persoon</th>
+                                <th>Tag nummer</th>
+                                <th>Reserverings datum</th>
+                                <th>Reserverings type</th>
+                            </tr>${tableHTML}`;
+                });
+        };
+
+        function createClosedLoansTable() {
+            fetch('')
+                .then(response => response.json())
+                .then(data => {
+                    const tableHTML = data.map(loan => {
+                        return `<tr>
+                  <td>${loan.title} </td>
+                  <td>${loan.name}</td>
+                  <td>${loan.tagNumber}</td>
+                  <td>${loan.loanDate}</td>
+                  <td>${loan.returnDate}</td>  
+              </tr>`;
+                    }).join('');
+
+                    // Add the table to the HTML
+                    historyTableLoans.innerHTML = `<tr>
+                                <th>Titel</th>
+                                <th>Persoon</th>
+                                <th>Tag nummer</th>
+                                <th>Lenings datum</th>
+                                <th>Inleverings datum</th>
+                            </tr>${tableHTML}`;
+                });
+        };
+
+        createReservationHistoryTable();
+        createClosedLoansTable();
+        createReservationTable();
+        createLoansTable();
+
+        let currentResId = 0;
+        // Function that changes the content of the modal
+        resModal.addEventListener('show.bs.modal', function (event) {
+            let link = event.relatedTarget;
+            let modalBody = resModal.querySelector('.modal-body');
+
+            currentResId = link.getAttribute('data-bs-id');
+            modalBody.setAttribute('style', 'white-space: pre;');
+
+            modalBody.textContent = "Weet u zeker dat u deze reservering wil annuleren?";
+            modalBody.textContent += "\r\nBoek: \t" + link.getAttribute('data-bs-title');
+        });
+
+        function cancelReservation() {
+
+            let CancelReservationDto = {
+                reservationId: currentResId,
+            }
+            if (resType == "res") {
+                fetch("http://localhost:8080/reservation/cancel", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(CancelReservationDto)
+
+                })
+                    .then(response => {
+                        alert('Reservering annuleren gelukt!');
+                    })
+                    .catch(error => {
+                        alert('Er is iets fouts gegaan');
+                    });
+            }
+            else {
+                fetch("http://localhost:8080/awaitingReservation/cancel", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(CancelReservationDto)
+
+                })
+                    .then(response => {
+                        alert('Reservering annuleren gelukt!');
+                    })
+                    .catch(error => {
+                        alert('Er is iets fouts gegaan');
+                    });
+            }
+        }
+
+    </script>
+
+
+
 </body>
+
 </html>

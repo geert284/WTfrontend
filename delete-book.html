@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="mystyle.css">
+
+    <script src="js/common.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+</head>
+<body>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+
+    <script>
+        function switchTable() {
+            var selectedTable = document.getElementById("book-options").value;
+            if (selectedTable == "Exemplaren") {
+                document.getElementById("bookadmin-table").style.display = "none";
+                document.getElementById("copyadmin-table").style.display = "table";
+            } else {
+                document.getElementById("copyadmin-table").style.display = "none";
+                document.getElementById("bookadmin-table").style.display = "table";
+            }
+            
+        }
+
+        function searchBooksAdmin() {
+            fetch('http://localhost:8080/book/all')
+            .then(response => response.json())
+            .then(data => { 
+                    console.log('Data', data);
+
+                    let booksAdminHtml = `
+                        <tr id="table-header">
+                            <td>Titel</td>
+                            <td>Schrijver</td>
+                            <td>Categorie</td>
+                            <td>Editie</td>
+                            <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-book.html';" class="green-button">+</button></td>
+                            </tr>
+                    `
+                    data.forEach(book => {
+                        booksAdminHtml += `
+                            <tr>
+                                <td>${book.title}</td>
+                                <td>${book.author}</td>
+                                <td>${book.category}</td>
+                                <td>${book.edition}</td>
+                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html';" class="green-button">Wijzig</button></td>
+                                <td><button onclick="deleteBook(${book.id})">Delete Book</button></td>
+
+
+                            </tr>
+                        `
+                    });
+
+                    document.getElementById('bookadmin-table').innerHTML = booksAdminHtml;
+
+                });
+        }
+        searchBooksAdmin();
+
+        
+        function deleteBook(bookId) {
+            var confirmed = confirm("Are you sure you want to delete this book?");
+
+            if (confirmed) {
+                var xhr = new XMLHttpRequest();
+
+                xhr.open('POST', 'http://localhost:8080/book/delete/' + bookId, true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+
+                var deleteBookDto = { id: bookId };
+
+
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        alert('Book deleted successfully');
+
+                        // Optionally, you can update the UI to remove the deleted book
+                    } else {
+                        alert('Error deleting book: ' + xhr.statusText);
+                    }
+                };
+
+                xhr.send(JSON.stringify(deleteBookDto));
+                
+                location.reload;
+                
+            }
+        }
+
+
+        // function deleteBook(bookId) {
+        //     var confirmed = confirm("Are you sure you want to delete this book?");
+
+        //     if (confirmed) {
+        //         fetch(`'http://localhost:8080/book/${book.id}/delete`, {
+        //             method: 'DELETE',
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             }
+        //         })
+        //         .then(response => {
+        //             if (!response.ok) {
+        //                 throw new Error(`HTTP error! status: ${response.status}`);
+        //             }
+        //             return response.json(); // Assuming the server sends back a JSON response
+        //         })
+        //         .then(data => {
+        //             alert('Book deleted successfully');
+        //             // Optionally, you can update the UI to remove the deleted book
+        //             search();
+        //             location.reload();
+        //         })
+        //         .catch(error => {
+        //             alert('Error deleting book: ' + error.message);
+        //         });
+        //     }
+        // }
+
+
+
+    </script>
+
+    <div data-component="header">
+
+    </div>
+    <br><br><br>
+
+    <!-- 
+    <div class="sidebar">
+        <br><br><br><br>
+        <div style="font-weight: bold;">Filters</div>
+        <hr>
+        <div>Filter 1</div>
+        <div>Filter 2</div>
+        <div>Filter 3</div>
+    </div> -->
+
+    
+    <div class="body-text">
+        <h2>Boeken beheren</h2>
+        
+        <label for="book-options" style="margin-left: 68%;">Toon:</label>
+        <select id="book-options" onchange="switchTable()">
+            <option label="Boeken">Boeken</option>
+            <option label="Exemplaren">Exemplaren</option>
+        </select>
+        <br><br>
+        <table id="bookadmin-table"></table>
+        <table id="copyadmin-table" style="display: none;">
+            <tr id="table-header2">
+                <td>Titel</td>
+                <td>Schrijver</td>
+                <td>Categorie</td>
+                <td>Editie</td>
+                <td>Staat</td>
+                <td>Beschikbaar</td>
+                <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-book.html';" class="green-button">+</button></td>
+            </tr>
+        </table>
+    </div>
+
+    
+
+
+</body>
+</html>
