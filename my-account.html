@@ -13,26 +13,64 @@
     <script>
 
         function saveInfo() {
-            // if fields are filled out
-            let accountInfo = {
-                firstName: document.getElementById('firstNameInput').value,
-                lastName: document.getElementById('lastNameInput').value,
-                password: document.getElementById('newPassword').value,
-            }
+            spanReset();
+            let firstName = document.getElementById('firstNameInput').value;
+            let lastName = document.getElementById('lastNameInput').value;
+            let password = document.getElementById('newPassword').value
+            if (!firstName.length || !lastName.length || !password.length) {
+                document.getElementById("alertSpanFill").style.display = "block";
+            } else if (!checkPassword(password)) {
+                document.getElementById("alertSpanPassword").style.display = "block";
+            } else {
+                let accountInfo = {
+                firstName: firstName,
+                lastName: lastName,
+                password: password,
+                }
 
-            fetch(`http://localhost:8080/account/saveInfo/${localStorage.getItem('WT_ID')}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(accountInfo)
-            })
-            document.forms['myForm'].reset();
+                fetch(`http://localhost:8080/account/saveInfo/${localStorage.getItem('WT_ID')}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(accountInfo)
+                })
+                document.forms['myForm'].reset();
+                document.getElementById("alertSpanSave").style.display = "block";
+                localStorage.setItem('WT_FIRSTNAME', firstName);
+                localStorage.setItem('WT_LASTNAME', lastName); 
+            }
+            
         }
 
+        // Personal info in placeholder inputs when opening page
         function showInfo() {
             document.getElementById("firstNameInput").value = localStorage.getItem('WT_FIRSTNAME');
             document.getElementById("lastNameInput").value = localStorage.getItem('WT_LASTNAME');
+        }
+
+        // Reset spans back to invisible
+        function spanReset() {
+            document.getElementById("alertSpanFill").style.display = "none";
+            document.getElementById("alertSpanSave").style.display = "none";
+            document.getElementById("alertSpanPassword").style.display = "none";
+        }
+
+        // Checks if submitted password meets criteria
+        function checkPassword(password) {
+            if (password.length < 8) {
+                return false;
+            }
+            if (!/[A-Z]/.test(password)) {
+                return false;
+            }
+            if (!/\d/.test(password)) {
+                return false;
+            }
+            if (!/[!@#$%^&*(),.?"_:{}|<>]/.test(password)) {
+                return false;
+            }
+            return true;
         }
 
     </script>
@@ -42,19 +80,33 @@
     <br><br>
 
     <p style="font-weight: bold;">Persoonsgegevens</p>
-    <form id="myForm">
         <th>Voornaam</th>
         <input type="text" id="firstNameInput"> <br>
         <th>Achternaam</th>
         <input type="text" id="lastNameInput"> <br>
         <br>
-
+    <form id="myForm">
         <p style="font-weight: bold;">Wachtwoord instellen</p>
         <th>Nieuw wachtwoord</th>
         <input type="password" id="newPassword"> <br>
-        <br>
     </form>
     <button type="button" class="btn btn-success" onclick="saveInfo()">Opslaan</button>
+    <br><br>
+    <span style="display: none;" id="alertSpanSave">
+        <div class="alert alert-success" role="alert" style="width: 300px;">
+            Uw gegevens zijn opgeslagen!
+        </div>
+    </span>
+    <span style="display: none;" id="alertSpanFill">
+        <div class="alert alert-danger" role="alert" style="width: 300px;">
+            Vul alle invoervelden in
+        </div>
+    </span>
+    <span style="display: none;" id="alertSpanPassword">
+        <div class="alert alert-danger" role="alert" style="width: 300px;">
+            Dit wachtwoord voldoet niet aan de eisen
+        </div>
+    </span>
 
 </body>
 </html>
