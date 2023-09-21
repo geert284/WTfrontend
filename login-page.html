@@ -5,11 +5,10 @@
     <title>Document</title>
     <script src="js/common.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <!-- <link rel="stylesheet" href="mystyle.css"/> -->
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" /> -->
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    
 </head>
-<body>
+<body onload="clearStorage()">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 
     <div class="container text-center">
@@ -20,11 +19,14 @@
             <form>
                 <div class="mb-3">
                     <label for="emailInput" class="form-label">E-mailadres</label>
-                    <input type="email" class="form-control"  id="emailInput" style="width: 300px;">
+                    <input type="email" class="form-control"  id="emailInput">
                 </div>
-                <div class="mb-3">
-                    <label for="passwordInput" class="form-label">Wachtwoord</label>
-                    <input type="password" class="form-control" id="passwordInput" style="width: 300px;">
+                <label for="passwordInput" class="form-label">Wachtwoord</label>
+                <div class="mb-3 input-group">
+                    <input type="password" class="form-control" id="passwordInput">
+                    <span class="input-group-text">
+                        <i class="bi bi-eye-slash pull-end" id="eye"></i>
+                    </span>
                 </div>
                 <span  style="display: none;" id="alertSpanPassword">
                     <div class="alert alert-danger" role="alert" style="width: 300px;">
@@ -48,18 +50,23 @@
 
     <script>
 
-        // Password eye toggle
-        // const togglePassword = document.querySelector("#togglePassword");
-        // const password = document.querySelector("#passwordInput");
+        // Clears local storage when loading page and logging out
+        function clearStorage() {
+            localStorage.clear();
+        }
 
-        // togglePassword.addEventListener("click", function () {
-        //     // toggle the type attribute
-        //     const type = password.getAttribute("type") === "password" ? "text" : "password";
-        //     password.setAttribute("type", type);
+        // Password eye toggle
+        const togglePassword = document.querySelector("#eye");
+        const password = document.querySelector("#passwordInput");
+
+        togglePassword.addEventListener("click", function () {
+            // toggle the type attribute
+            const type = password.getAttribute("type") === "password" ? "text" : "password";
+            password.setAttribute("type", type);
             
-        //     // toggle the icon
-        //     this.classList.toggle("bi-eye");
-        // });
+            // toggle the icon
+            this.classList.toggle("bi-eye");
+        });
 
         // Resets all spans (error messages)
         function spanReset() {
@@ -95,8 +102,8 @@
                         localStorage.setItem('WT_LASTNAME', responseDto.lastName);
                         localStorage.setItem('WT_FIRSTNAME', responseDto.firstName);
                         localStorage.setItem('WT_ID', responseDto.id);
+                        localStorage.setItem('WT_ADMIN', responseDto.admin);
                         window.location.href = "home-page.html"
-
                     } else {
                         checkError(responseDto);
                     }
