@@ -42,20 +42,19 @@
     </form>
 
     <form id="updateBookForm">
-        <label for="available-input">Beschikbaarheid:</label>
+        <label for="available-input">Beschikbaarheid</label>
         <select id="available-input">
             <option value="true">True</option>
             <option value="false">False</option>
         </select> <br>
         <th>Status</th>
         <input type="text" id="status-input" placeholder="Status"> <br>
-        <th>Buiten gebruik</th>
-        <label for="outOfUse-input">Beschikbaarheid:</label>
+        <label for="outOfUse-input">Buiten gebruik</label>
         <select id="outOfUse-input">
             <option value="true">True</option>
             <option value="false">False</option>
         </select> <br>
-        <button type="button" class="btn btn-success" onclick="createBookCopy()">Opslaan</button>
+        <button type="button" class="btn btn-success" onclick="updateBookCopy()">Opslaan</button>
         <br>
         <br>
         <br>
@@ -64,7 +63,6 @@
     </form>
 
     <script>
-        
         
         const urlParams = new URLSearchParams(window.location.search);
         const bookCopyId = urlParams.get('id');
@@ -169,7 +167,7 @@
             .catch(error => {
                 alert('Er is iets fouts gegaan');
             });
-
+            loadBookCopy();
         }
 
 
