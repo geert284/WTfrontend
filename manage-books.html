@@ -56,8 +56,6 @@
             })
             .then(response => {
                 alert('Is goedgegaan');
-                
-                search();
                 location.reload();
             })
             .catch(error => {
@@ -78,7 +76,7 @@
                             <td>Categorie</td>
                             <td>Editie</td>
                             <td>Taal</td>
-                            <td style="text-align: right"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">+</button>
+                            <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Boek toevoegen</button>
                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -122,7 +120,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary" onclick="createBook()" data-bs-dismiss="modal">Opslaan</button>
+                                                <button type="button" class="btn btn-success" onclick="createBook()" data-bs-dismiss="modal">Opslaan</button>
                                             </div>
                                         </div>
                                     </div>
