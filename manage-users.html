@@ -36,20 +36,19 @@
                         } else {
                             icon = '<img src="images/circle.svg">'
                         }
-                        if (account.firstName != null) { // check if account was made or just added to whitelist
+                        if (account.firstName != null && account.active) { // check if account was made or just added to whitelist
                             accountHtml += `
                                 <tr>
                                     <td>${account.firstName} ${account.lastName}</td>
                                     <td>${account.email}</td>
                                     <td>${icon}</td>
-                                    <td style="text-align: right"><button type="button" onclick="deleteConfirmMessage(${account.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Verwijder</button></td>
+                                    <td style="text-align: right"><button type="button" onclick="deleteThisUser(${account.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Verwijder</button></td>
                                 </tr>
                             `
                         }
                     });
 
                     document.getElementById('user-table').innerHTML = accountHtml;
-
                 });
         }
         searchUsers();
@@ -83,6 +82,25 @@
                 body: JSON.stringify(newAccount)
                 
             })
+
+        }
+
+        function deleteThisUser(userID) {
+            localStorage.setItem('WT_DELETE_USER', userID);
+        }
+
+        function archiveUser() {
+            let userID = localStorage.getItem('WT_DELETE_USER');
+            let archiveThisUser = { active: false }
+
+            fetch(`http://localhost:8080/account/archive-user/${userID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(archiveThisUser)
+            })
+            location.reload();
         }
 
     </script>
@@ -101,11 +119,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p>Weet u zeker dat u deze gebruiker wilt verwijderen? Er zitten mogelijk nog leningen verbonden aan het account.</p>
+                            <p>Weet je zeker dat je deze gebruiker wilt verwijderen? Er zitten mogelijk nog leningen verbonden aan het account.</p>
                         </div>
                     <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="removeUser">Verwijderen</button>
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="archiveUser()">Verwijderen</button>
                 </div>
             </div>
         </div>

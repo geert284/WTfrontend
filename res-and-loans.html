@@ -145,7 +145,7 @@
               <td>${reservation.accountName}</td>
               <td>${tagNumber}</td> <!-- Display reservation.tagNumber or 'N/A' -->
               <td>${reservation.reservationDate}</td>
-              <td>${reservation.available}</td>
+              <td>${reservation.available ? "Ja" : "Nee"}</td>
               <td>${button}</td>
           </tr>`;
           }).join('');
@@ -154,7 +154,7 @@
           reservationsTable.innerHTML = `<tr>
                             <th>Titel</th>
                             <th>Persoon</th>
-                            <th>Tag nummer</th>
+                            <th>Boek nummer</th>
                             <th>Reserverings datum</th>
                             <th>Boek beschikbaar</th>
                             <th>Reservering voltooien</th>
@@ -181,7 +181,7 @@
           loansTable.innerHTML = `<tr>
                             <th>Titel</th>
                             <th>Persoon</th>
-                            <th>Tag nummer</th>
+                            <th>Boek nummer</th>
                             <th>Lenings datum</th>
                             <th>Lening voltooien</th>
                         </tr>${tableHTML}`;
@@ -206,7 +206,7 @@
           historyTableRes.innerHTML = `<tr>
                             <th>Titel</th>
                             <th>Persoon</th>
-                            <th>Tag nummer</th>
+                            <th>Boek nummer</th>
                             <th>Reserverings datum</th>
                             <th>Reserverings type</th>
                         </tr>${tableHTML}`;
@@ -231,7 +231,7 @@
           historyTableLoans.innerHTML = `<tr>
                             <th>Titel</th>
                             <th>Persoon</th>
-                            <th>Tag nummer</th>
+                            <th>Boek nummer</th>
                             <th>Lenings datum</th>
                             <th>Inleverings datum</th>
                         </tr>${tableHTML}`;
@@ -289,6 +289,7 @@
         .catch(error => {
           alert('Er is iets fouts gegaan');
         });
+        location.reload();
     }
 
     function finishLoan() {
@@ -310,6 +311,7 @@
         .catch(error => {
           alert('Er is iets fouts gegaan');
         });
+        location.reload();
     }
   </script>
 

@@ -14,50 +14,129 @@
 
     <h1> Boekkopie update </h1>
 
+    <form id="Book">
+        
+        <label for="title-input">Title</label>
+        <input type="text" id="title-input" readonly> <br>
+
+        <label for="isbn-input">ISBN</label>
+        <input type="text" id="isbn-input" readonly> <br>
+        
+        <label for="category-input">Category</label>
+        <input type="text" id="category-input" readonly> <br>
+        
+        <label for="format-input">Format</label>
+        <input type="text" id="format-input" readonly> <br>
+        
+        <label for="language-input">Language</label>
+        <input type="text" id="language-input" readonly> <br>
+        
+        <label for="edition-input">Edition</label>
+        <input type="text" id="edition-input" readonly> <br>
+        
+        <label for="author-input">Author</label>
+        <input type="text" id="author-input" readonly> <br>
+        <br>
+        <br>
+
+    </form>
+
     <form id="updateBookForm">
-        <th>Beschikbaar</th>
-        <input type="text" id="available-input" placeholder="Available"> <br>
+        <label for="available-input">Beschikbaarheid</label>
+        <select id="available-input">
+            <option value="true">True</option>
+            <option value="false">False</option>
+        </select> <br>
         <th>Status</th>
         <input type="text" id="status-input" placeholder="Status"> <br>
-        <th>Buiten gebruik</th>
-        <input type="text" id="outOfUse-input" placeholder="OutOfUse"> <br>
+        <label for="outOfUse-input">Buiten gebruik</label>
+        <select id="outOfUse-input">
+            <option value="true">True</option>
+            <option value="false">False</option>
+        </select> <br>
         <button type="button" class="btn btn-success" onclick="updateBookCopy()">Opslaan</button>
         <br>
         <br>
         <br>
-        <td style="text-align: right"><button type="button" class="btn btn-success" onclick="window.location.href='manage-books.html';">Boeken beheren</button></td>
-        
+        <td style="text-align: right"><button type="button" class="btn btn-success"onclick="window.location.href='manage-books.html';">Boeken beheren</button></td>
+
     </form>
 
     <script>
         
         const urlParams = new URLSearchParams(window.location.search);
-        const bookId = urlParams.get('id');
+        const bookCopyId = urlParams.get('id');
+        let bookId; 
+
+        loadBookCopy();
         
 
-        if (bookId) {
+        function loadBookCopy () {
+            if (bookCopyId) {
+                //console.log(bookId);
+                fetch(`http://localhost:8080/bookcopy/${bookCopyId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const available = data.available;
+                        const status = data.status;
+                        const outOfUse = data.outOfUse;
+                        bookId = data.book.id;
 
-            //console.log(bookId);
-            fetch(`http://localhost:8080/bookcopy/${bookId}`)
-                .then(response => response.json())
-                .then(data => {
-                    const available = data.available;
-                    const status = data.status;
-                    const outOfUse = data.outOfUse;
 
-                    const avaiableInput = document.getElementById('available-input');
-                    const statusInput = document.getElementById('status-input');
-                    const outOfUseInput = document.getElementById('outOfUse-input');
+                        const avaiableInput = document.getElementById('available-input');
+                        const statusInput = document.getElementById('status-input');
+                        const outOfUseInput = document.getElementById('outOfUse-input');
+                        
 
-                    avaiableInput.value = available; 
-                    statusInput.value = status;
-                    outOfUseInput.value = outOfUse;
+                        avaiableInput.value = available; 
+                        statusInput.value = status;
+                        outOfUseInput.value = outOfUse;
+                        loadBook();
 
-                })
-                .catch(error => console.error('Error:', error));
-        } else {
-            console.error('No bookId provided in the URL');
+                    })
+                    .catch(error => console.error('Error:', error));
+            } else {
+                console.error('No bookId provided in the URL');
+            }
         }
+        function loadBook() {
+            if (bookId != null) {
+                //console.log(bookId);
+                fetch(`http://localhost:8080/book/${bookId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const title = data.title;
+                        const isbn = data.isbn;
+                        const category = data.category;
+                        const format = data.format;
+                        const language = data.language;
+                        const edition = data.edition;
+                        const author = data.author;
+
+                        const titleInput = document.getElementById('title-input');
+                        const isbnInput = document.getElementById('isbn-input');
+                        const categoryInput = document.getElementById('category-input');
+                        const formatInput = document.getElementById('format-input');
+                        const languageInput = document.getElementById('language-input');
+                        const editionInput = document.getElementById('edition-input');
+                        const authorInput = document.getElementById('author-input');
+
+
+                        titleInput.value = title; 
+                        isbnInput.value = isbn;
+                        languageInput.value = language;
+                        categoryInput.value = category;
+                        formatInput.value = format;
+                        editionInput.value = edition;
+                        authorInput.value = author;
+                    })
+                    .catch(error => console.error('Error:', error));
+                } else {
+                console.error('No bookId provided in the URL');
+                }
+            }	
+        
+        
 
         
         
@@ -74,7 +153,7 @@
             }
 
             console.log(bookId);
-            fetch(`http://localhost:8080/bookcopy/update/${bookId}`, {
+            fetch(`http://localhost:8080/bookcopy/update/${bookCopyId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -88,7 +167,7 @@
             .catch(error => {
                 alert('Er is iets fouts gegaan');
             });
-
+            loadBookCopy();
         }
 
 

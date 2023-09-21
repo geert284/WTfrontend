@@ -137,13 +137,14 @@
                                 <td>${book.category}</td>
                                 <td>${book.edition}</td>
                                 <td>${book.language}</td>
-
-                                <td style="text-align: right"><button type="button" onclick="getCopies(${book.id})">Klap uit</button></td>
-                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html?id=${book.id}';" class="green-button">Wijzig</button></td> 
+                                <td></td>
+                                <td style="text-align: right"><button type="button" onclick="getCopies(${book.id})";" class="btn btn-success"  >Klap uit</button></td>
+                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html?id=${book.id}';" class="btn btn-success">Wijzig</button></td> 
+                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-bookcopy.html?id=${book.id}';" class="btn btn-success"">Exemplaar toevoegen</button></td> 
                                  
                             </tr>
                         `
-                        /* <td><button onclick="deleteBook(${book.id})">Boek verwijderen</button></td> */
+                        /* <td><button onclick="deleteBook(${book.id})";" class="btn btn-success">Boek verwijderen</button></td> */
                     });
 
                     document.getElementById('bookadmin-table').innerHTML = booksAdminHtml;
@@ -170,25 +171,36 @@
                             <td>Exemplaar ID</td>
                             <td>Staat</td>
                             <td>Beschikbaar</td>
-                            <td style="text-align: right"><button type="button" class="btn btn-success" onclick="window.location.href = 'add-book.html';">+</button></td>
+                            <td>Tag nummer</td>
+                            <td>Buiten gebruik</td>
                         </tr>
                     `
                     data.forEach(bookcopy => {
                         let bookIDfromDB = bookcopy.bookId
                         if (bookIDfromDB == bookID) {
                             let icon = '';
+                            let icon1 = '';
                             if (bookcopy.available) {
                                 icon = '<img src="images/check-circle.svg">';
                             } else {
                                 icon = '<img src="images/circle.svg">'
+                            }
+                            if (bookcopy.outOfUse) {
+                                icon1 = '<img src="images/check-circle.svg">';
+                            } else {
+                                icon1 = '<img src="images/circle.svg">'
                             }
                             booksAdminHtml += `
                             <tr>
                                 <td>${bookcopy.id}</td>
                                 <td>${bookcopy.status}</td>
                                 <td>${icon}</td>
-                                <td style="text-align: right"><button type="button" class="btn btn-success" onclick="window.location.href = 'adjust-book.html';">Wijzig</button></td>
-                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-bookcopy.html?id=${bookcopy.id}';" class="green-button">Wijzig</button></td>
+                                <td>${bookcopy.tagNumber}</td>
+                                <td>${icon1}</td>
+                                <td></td>
+                                <td></td>                             
+                                <td style="text-align: right"><button type="button"  onclick="window.location.href = 'adjust-bookcopy.html?id=${bookcopy.id}';" class="btn btn-success">Wijzig</button></td>
+   
                             </tr>
                         `
                         }
