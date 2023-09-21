@@ -56,23 +56,6 @@
             document.getElementById("alertSpanPassword").style.display = "none";
         }
 
-        // Checks if submitted password meets criteria
-        function checkPassword(password) {
-            if (password.length < 8) {
-                return false;
-            }
-            if (!/[A-Z]/.test(password)) {
-                return false;
-            }
-            if (!/\d/.test(password)) {
-                return false;
-            }
-            if (!/[!@#$%^&*(),.?"_:{}|<>]/.test(password)) {
-                return false;
-            }
-            return true;
-        }
-
     </script>
     
     <div data-component="header"></div>
@@ -89,12 +72,13 @@
         <p style="font-weight: bold;">Wachtwoord instellen</p>
         <th>Nieuw wachtwoord</th>
         <input type="password" id="newPassword"> <br>
+        <div id="emailHelp" class="form-text">Gebruik een wachtwoord van minstens 8 karakters met minstens 1 hoofdletter, 1 speciaal teken en 1 cijfer.</div>
     </form>
     <button type="button" class="btn btn-success" onclick="saveInfo()">Opslaan</button>
     <br><br>
     <span style="display: none;" id="alertSpanSave">
         <div class="alert alert-success" role="alert" style="width: 300px;">
-            Uw gegevens zijn opgeslagen!
+            Je gegevens zijn opgeslagen!
         </div>
     </span>
     <span style="display: none;" id="alertSpanFill">
