@@ -16,7 +16,11 @@
 
     <script>
         function searchBooksAdmin() {
-            fetch('http://localhost:8080/book/all')
+            fetch('http://localhost:8080/book/all', {
+                headers: {
+                    'Authorization': localStorage.getItem('WT_TOKEN')
+                }
+            })
             .then(response => response.json())
             .then(data => { 
                     console.log('Data', data);
@@ -42,10 +46,11 @@
 
                                 <td style="text-align: right"><button type="button" onclick="getCopies(${book.id})">Klap uit</button></td>
                                 <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html?id=${book.id}';" class="green-button">Wijzig</button></td> 
-                                 
+                        
+                                <td><button onclick="deleteBook(${book.id})">Boek verwijderen</button></td>
                             </tr>
                         `
-                        /* <td><button onclick="deleteBook(${book.id})">Boek verwijderen</button></td> */
+                        
                     });
 
                     document.getElementById('bookadmin-table').innerHTML = booksAdminHtml;
@@ -111,6 +116,7 @@
 
                 xhr.open('POST', 'http://localhost:8080/book/delete/' + bookId, true);
                 xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.setRequestHeader('Authorization', localStorage.getItem('WT_TOKEN'));
 
                 var deleteBookDto = { id: bookId };
 
