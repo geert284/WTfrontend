@@ -17,6 +17,7 @@
             let firstName = document.getElementById('firstNameInput').value;
             let lastName = document.getElementById('lastNameInput').value;
             let password = document.getElementById('newPassword').value
+            
             if (!firstName.length || !lastName.length || !password.length) {
                 document.getElementById("alertSpanFill").style.display = "block";
             } else if (!checkPassword(password)) {
@@ -28,7 +29,7 @@
                 password: password,
                 }
 
-                fetch(`http://localhost:8080/account/saveInfo/${localStorage.getItem('WT_ID')}`, {
+                fetch(`http://localhost:8080/account/save-info/${localStorage.getItem('WT_ID')}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
