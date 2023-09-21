@@ -49,20 +49,6 @@
             </div>
         </div>
         <div class="accordion-item">
-            <h2 class="accordion-header" id="headingThree">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    Geschiedenis van reserveringen
-                </button>
-            </h2>
-            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
-                data-bs-parent="#reservationsAccordion">
-                <div class="accordion-body">
-                    <table class="table table-striped" id="historyTableRes"></table>
-                </div>
-            </div>
-        </div>
-        <div class="accordion-item">
             <h2 class="accordion-header" id="headingFour">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
@@ -120,16 +106,16 @@
                   <td>${reservation.title} </td>
                   <td>${tagNumber}</td> <!-- Display reservation.tagNumber or 'N/A' -->
                   <td>${reservation.reservationDate}</td>
-                  <td>${reservation.available}</td>
+                  <td>${reservation.available ? "Ja" : "Nee"}</td>
                   <td><button class="" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
-                    data-bs-title="${reservation.title}" data-bs-id="${reservation.id}"> Annuleren </button></td>
+                    data-bs-title="${reservation.title}" data-bs-id="${reservation.id}" data-bs-resType= "${resType}"> Annuleren </button></td>
               </tr>`;
                     }).join('');
 
                     // Add the table to the HTML
                     reservationsTable.innerHTML = `<tr>
                                 <th>Titel</th>
-                                <th>Boek     nummer</th>
+                                <th>Boek nummer</th>
                                 <th>Reserverings datum</th>
                                 <th>Boek beschikbaar</th>
                                 <th>Reservering annuleren</th>
@@ -138,7 +124,7 @@
         };
 
         function createLoansTable() {
-            fetch('')
+            fetch(`http://localhost:8080/account/getLoansActive/${localStorage.getItem('WT_TOKEN')}`)
                 .then(response => response.json())
                 .then(data => {
                     const tableHTML = data.map(loan => {
@@ -152,45 +138,18 @@
                     // Add the table to the HTML
                     loansTable.innerHTML = `<tr>
                                 <th>Titel</th>
-                                <th>Tag nummer</th>
+                                <th>Boek nummer</th>
                                 <th>Lenings datum</th>
                             </tr>${tableHTML}`;
                 });
         };
-
-        function createReservationHistoryTable() {
-            fetch('')
-                .then(response => response.json())
-                .then(data => {
-                    const tableHTML = data.map(reservation => {
-                        return `<tr>
-                  <td>${reservation.title} </td>
-                  <td>${reservation.accountName}</td>
-                  <td>${reservation.tagNumber}</td>
-                  <td>${reservation.reservationDate}</td>
-                  <td>${reservation.type}</td>   
-              </tr>`;
-                    }).join('');
-
-                    // Add the table to the HTML
-                    historyTableRes.innerHTML = `<tr>
-                                <th>Titel</th>
-                                <th>Persoon</th>
-                                <th>Tag nummer</th>
-                                <th>Reserverings datum</th>
-                                <th>Reserverings type</th>
-                            </tr>${tableHTML}`;
-                });
-        };
-
         function createClosedLoansTable() {
-            fetch('')
+            fetch(`http://localhost:8080/account/getLoansFinished/${localStorage.getItem('WT_TOKEN')}`)
                 .then(response => response.json())
                 .then(data => {
                     const tableHTML = data.map(loan => {
                         return `<tr>
                   <td>${loan.title} </td>
-                  <td>${loan.name}</td>
                   <td>${loan.tagNumber}</td>
                   <td>${loan.loanDate}</td>
                   <td>${loan.returnDate}</td>  
@@ -200,15 +159,13 @@
                     // Add the table to the HTML
                     historyTableLoans.innerHTML = `<tr>
                                 <th>Titel</th>
-                                <th>Persoon</th>
-                                <th>Tag nummer</th>
+                                <th>Boek nummer</th>
                                 <th>Lenings datum</th>
                                 <th>Inleverings datum</th>
                             </tr>${tableHTML}`;
                 });
         };
 
-        createReservationHistoryTable();
         createClosedLoansTable();
         createReservationTable();
         createLoansTable();
@@ -221,6 +178,7 @@
 
             currentResId = link.getAttribute('data-bs-id');
             modalBody.setAttribute('style', 'white-space: pre;');
+            resType = link.getAttribute('data-bs-resType');
 
             modalBody.textContent = "Weet u zeker dat u deze reservering wil annuleren?";
             modalBody.textContent += "\r\nBoek: \t" + link.getAttribute('data-bs-title');
@@ -241,7 +199,7 @@
 
                 })
                     .then(response => {
-                        alert('Reservering annuleren gelukt!');
+                        alert('Reservering annuleren gelukt!');                        
                     })
                     .catch(error => {
                         alert('Er is iets fouts gegaan');
@@ -263,6 +221,7 @@
                         alert('Er is iets fouts gegaan');
                     });
             }
+            location.reload();
         }
 
     </script>
