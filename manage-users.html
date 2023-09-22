@@ -30,13 +30,11 @@
                         </tr>
                     `
                     data.forEach(account => {
-                        let icon = '';
-                        if (account.admin) { // check if user in table is admin
-                            icon = '<img src="images/check-circle.svg">';
-                        } else {
-                            icon = '<img src="images/circle.svg">'
-                        }
-                        if (account.firstName != null && account.active) { // check if account was made or just added to whitelist
+                        let icon = ''; 
+                        // Check if user is admin
+                        if (account.admin) { icon = '<img src="images/check-circle.svg">'; } else { icon = '<img src="images/circle.svg">' }
+                        // Check if registered and active account
+                        if (account.firstName != null && account.active) { 
                             accountHtml += `
                                 <tr>
                                     <td>${account.firstName} ${account.lastName}</td>
@@ -55,8 +53,12 @@
 
         /* Check if submitted e-mail adress is from WT; then they can assign admin role */
         function emailCheck() {
-            if (!document.getElementById("emailField").value.endsWith("@workingtalent.nl") && (document.getElementById("adminCheck").checked)) {
+            let email = document.getElementById("emailField").value;
+            let admin = document.getElementById("adminCheck").checked
+            if (!email.endsWith("@workingtalent.nl") && (admin)) {
                 document.getElementById("alertSpan").style.display = "block";
+                document.getElementById("addUser").className = "btn btn-success disabled";
+            } else if (email.length == 0) {
                 document.getElementById("addUser").className = "btn btn-success disabled";
             } else {
                 document.getElementById("alertSpan").style.display = "none";
@@ -82,7 +84,7 @@
                 body: JSON.stringify(newAccount)
                 
             })
-
+            document.forms['inputForm'].reset();
         }
 
         function deleteThisUser(userID) {
@@ -92,7 +94,6 @@
         function archiveUser() {
             let userID = localStorage.getItem('WT_DELETE_USER');
             let archiveThisUser = { active: false }
-
             fetch(`http://localhost:8080/account/archive-user/${userID}`, {
                 method: 'POST',
                 headers: {
@@ -110,7 +111,7 @@
     <h2>Gebruikers beheren</h2>
     <table id="user-table"></table>
 
-    <!-- Modal pop-up for deleting users -->
+    <!-- Modal pop-up for deleting users WITHOUT loans -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -119,11 +120,29 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p>Weet je zeker dat je deze gebruiker wilt verwijderen? Er zitten mogelijk nog leningen verbonden aan het account.</p>
+                            <p>Weet je zeker dat je deze gebruiker wilt verwijderen?</p>
                         </div>
                     <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
                     <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="archiveUser()">Verwijderen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pop-up for deleting users WITH pending loans -->
+    <div class="modal fade" id="pendingLoanModal" tabindex="-1" aria-labelledby="pendingLoanModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="pendingLoanModalLabel">Let op</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Dit account mag niet verwijderd worden. Voltooi eerst de leningen die verbonden zijn aan dit account.</p>
+                        </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
                 </div>
             </div>
         </div>
@@ -134,25 +153,27 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="addUserModalLabel">Gebruiker toevoegen</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
+                <h1 class="modal-title fs-5" id="addUserModalLabel">Gebruiker toevoegen</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                    <div class="modal-body">
+                        <form id="inputForm">
                             <p>Voer een e-mailadres in:</p>
                             <input type="email" class="form-control" id="emailField" placeholder="w.talent@workingtalent.nl" onkeyup="emailCheck()">
                             <br>
                             <input class="form-check-input mt-0" type="checkbox" value="" aria-label="adminCheck" id="adminCheck" onchange="emailCheck()">
                             <label for="adminCheck">Maak admin</label>
-                            <br><br>
-                            <span style="display: none;" id="alertSpan">
-                                <div class="alert alert-danger" role="alert">
-                                    Alleen gebruikers met een Working Talent e-mailadres mogen admin worden!
-                                </div>
-                            </span>
-                        </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="addUser" onclick="addUserToDB()">Toevoegen</button>
+                        </form>
+                        <br>
+                        <span style="display: none;" id="alertSpan">
+                            <div class="alert alert-danger" role="alert">
+                                Alleen gebruikers met een Working Talent e-mailadres mogen admin worden!
+                            </div>
+                        </span>
+                    </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+                <button type="button" class="btn btn-success disabled" data-bs-dismiss="modal" id="addUser" onclick="addUserToDB()">Toevoegen</button>
                 </div>
             </div>
         </div>

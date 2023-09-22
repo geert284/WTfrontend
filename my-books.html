@@ -77,7 +77,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"> Nee </button>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal"
                         data-bs-target="#confirmModal" onclick="cancelReservation()"> Ja reservering annuleren</button>
                     <!-- add onclick event  -->
                 </div>
@@ -115,8 +115,8 @@
                     // Add the table to the HTML
                     reservationsTable.innerHTML = `<tr>
                                 <th>Titel</th>
-                                <th>Boek nummer</th>
-                                <th>Reserverings datum</th>
+                                <th>Boeknummer</th>
+                                <th>Reserveringsdatum</th>
                                 <th>Boek beschikbaar</th>
                                 <th>Reservering annuleren</th>
                             </tr>${tableHTML}`;
@@ -138,8 +138,8 @@
                     // Add the table to the HTML
                     loansTable.innerHTML = `<tr>
                                 <th>Titel</th>
-                                <th>Boek nummer</th>
-                                <th>Lenings datum</th>
+                                <th>Boeknummer</th>
+                                <th>Leningsdatum</th>
                             </tr>${tableHTML}`;
                 });
         };
@@ -159,9 +159,9 @@
                     // Add the table to the HTML
                     historyTableLoans.innerHTML = `<tr>
                                 <th>Titel</th>
-                                <th>Boek nummer</th>
-                                <th>Lenings datum</th>
-                                <th>Inleverings datum</th>
+                                <th>Boeknummer</th>
+                                <th>Leningsdatum</th>
+                                <th>Inleverdatum</th>
                             </tr>${tableHTML}`;
                 });
         };

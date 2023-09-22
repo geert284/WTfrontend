@@ -15,8 +15,8 @@
     
     <div data-component="header"></div>
     
-    <h2>Home pagina</h2>
-    <h3>Welkom !!!!</h3>
+    <h2>Home</h2>
+    <h4>Welkom<span id="nameSpan"></span></h4>
 
     <input type="text" id="searchBar" placeholder="Zoek een boek">
     <button type="button" class="btn btn-success col-2" onclick="navigateToBooks()">Zoek</button>
@@ -47,13 +47,19 @@
                             </span>
                         </div>
                     <div class="modal-footer">
-                    <button type="button" class="btn btn-success disabled" id="saveInfo" onclick="savePersonalInfo()">Opslaan</button>
+                    <button type="button" class="btn btn-success disabled" id="saveInfo" onclick="savePersonalInfo(); displayName()">Opslaan</button>
                 </div>
             </div>
         </div>
     </div>
     
     <script>
+        function displayName() {
+            if (localStorage.getItem('WT_FIRSTNAME') != 'null')
+            document.getElementById('nameSpan').innerHTML = ', ' + localStorage.getItem('WT_FIRSTNAME');
+        }
+        displayName();
+
         function navigateToBooks() {
             const searchTerm = document.getElementById('searchBar').value;
             window.location.href = `library.html?search=${encodeURIComponent(searchTerm)}`;
@@ -92,7 +98,7 @@
                     password: password,
                 }
 
-                fetch(`http://localhost:8080/account/saveInfo/${localStorage.getItem('WT_ID')}`, {
+                fetch(`http://localhost:8080/account/save-info/${localStorage.getItem('WT_ID')}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

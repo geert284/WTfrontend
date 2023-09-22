@@ -72,67 +72,22 @@
                     let booksAdminHtml = `
                         <tr id="table-header">
                             <td>Titel</td>
-                            <td>Schrijver</td>
+                            <td>Auteur</td>
+                            <td>ISBN</td>
                             <td>Categorie</td>
+                            <td>Soort</td>
                             <td>Editie</td>
                             <td>Taal</td>
-                            <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Boek toevoegen</button>
-                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Boek toevoegen</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form>
-                                                    <div class="form-group">
-                                                        <label for="title-input" class="col-form-label">Title:</label>
-                                                        <input type="text" class="form-control" id="title-input">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="isbn-input" class="col-form-label">ISBN:</label>
-                                                        <input type="text" class="form-control" id="isbn-input">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="category-input" class="col-form-label">Category:</label>
-                                                        <input type="text" class="form-control" id="category-input">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="format-input" class="col-form-label">Format:</label>
-                                                        <input type="text" class="form-control" id="format-input">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="language-input" class="col-form-label">Language:</label>
-                                                        <input type="text" class="form-control" id="language-input">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="edition-input" class="col-form-label">Edition:</label>
-                                                        <input type="text" class="form-control" id="edition-input">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="author-input" class="col-form-label">Author:</label>
-                                                        <input type="text" class="form-control" id="author-input">
-                                                    </div>
-
-                                                    
-                                                </form>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-success" onclick="createBook()" data-bs-dismiss="modal">Opslaan</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
+                            <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">+</button></td>
                         </tr>`
                     data.forEach(book => {
                         booksAdminHtml += `
                             <tr>
                                 <td>${book.title}</td>
                                 <td>${book.author}</td>
+                                <td>${book.isbn}</td>
                                 <td>${book.category}</td>
+                                <td>${book.format}</td>
                                 <td>${book.edition}</td>
                                 <td>${book.language}</td>
                                 <td></td>
@@ -167,9 +122,9 @@
                     let booksAdminHtml = `
                         <tr>
                             <td>Exemplaar ID</td>
-                            <td>Staat</td>
+                            <td>Verkeert in staat</td>
                             <td>Beschikbaar</td>
-                            <td>Tag nummer</td>
+                            <td>Boek nummering</td>
                             <td>Buiten gebruik</td>
                         </tr>
                     `
@@ -179,21 +134,21 @@
                             let icon = '';
                             let icon1 = '';
                             if (bookcopy.available) {
-                                icon = '<img src="images/check-circle.svg">';
+                                icon = 'Uitleenbaar';
                             } else {
-                                icon = '<img src="images/circle.svg">'
+                                icon = 'Niet uitleenbaar'
                             }
                             if (bookcopy.outOfUse) {
-                                icon1 = '<img src="images/check-circle.svg">';
+                                icon1 = 'Buiten gebruik';
                             } else {
-                                icon1 = '<img src="images/circle.svg">'
+                                icon1 = 'In gebruik'
                             }
                             booksAdminHtml += `
                             <tr>
                                 <td>${bookcopy.id}</td>
                                 <td>${bookcopy.status}</td>
                                 <td>${icon}</td>
-                                <td>${bookcopy.tagNumber}</td>
+                                <td>${bookID+"."+bookcopy.tagNumber}</td>
                                 <td>${icon1}</td>
                                 <td></td>
                                 <td></td>                             
@@ -242,6 +197,21 @@
 
         // getCopies(2);
 
+        function checkForm() {
+            let title = document.getElementById('title-input').value;
+            let isbn = document.getElementById('isbn-input').value;
+            let category = document.getElementById('title-input').value;
+            let format = document.getElementById('category-input').value;
+            let language = document.getElementById('language-input').value;
+            let edition = document.getElementById('edition-input').value;
+            let author = document.getElementById('author-input').value;
+            if (title.length != 0 && isbn.length != 0 && category.length != 0 && format.length != 0 && language.length != 0 && edition.length != 0 && author.length != 0) {
+                document.getElementById("saveButton").className = "btn btn-success";
+            } else {
+                document.getElementById("saveButton").className = "btn btn-success disabled";
+            }
+        }
+
 
 
     </script>
@@ -255,6 +225,55 @@
         <br><br><br>
 
         <table id="bookcopy-table"></table>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Boek toevoegen</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="title-input" class="col-form-label">Titel:</label>
+                                <input type="text" class="form-control" id="title-input" onkeyup="checkForm()">
+                            </div>
+                            <div class="form-group">
+                                <label for="isbn-input" class="col-form-label">ISBN:</label>
+                                <input type="text" class="form-control" id="isbn-input" onkeyup="checkForm()">
+                            </div>
+                            <div class="form-group">
+                                <label for="category-input" class="col-form-label">Categorie:</label>
+                                <input type="text" class="form-control" id="category-input" onkeyup="checkForm()">
+                            </div>
+                            <div class="form-group">
+                                <label for="format-input" class="col-form-label">Soort:</label>
+                                <input type="text" class="form-control" id="format-input" onkeyup="checkForm()">
+                            </div>
+                            <div class="form-group">
+                                <label for="language-input" class="col-form-label">Taal:</label>
+                                <input type="text" class="form-control" id="language-input" onkeyup="checkForm()">
+                            </div>
+                            <div class="form-group">
+                                <label for="edition-input" class="col-form-label">Editie:</label>
+                                <input type="text" class="form-control" id="edition-input" onkeyup="checkForm()">
+                            </div>
+                            <div class="form-group">
+                                <label for="author-input" class="col-form-label">Auteur:</label>
+                                <input type="text" class="form-control" id="author-input" onkeyup="checkForm()">
+                            </div>
+
+                            
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                        <button type="button" class="btn btn-success disabled" onclick="createBook()" data-bs-dismiss="modal" id="saveButton">Toevoegen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
