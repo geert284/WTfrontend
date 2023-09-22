@@ -20,6 +20,8 @@
 
 
     <script>
+
+
         function createBook() {
             // Formulier uitlezen
             let titleInput = document.getElementById('title-input').value;
@@ -56,8 +58,6 @@
             })
             .then(response => {
                 alert('Is goedgegaan');
-                
-                search();
                 location.reload();
             })
             .catch(error => {
@@ -77,9 +77,10 @@
                             <td>Auteur</td>
                             <td>ISBN</td>
                             <td>Categorie</td>
-                            <td>Soort</td>
+                            <td>Bindwijze</td>
                             <td>Editie</td>
                             <td>Taal</td>
+                            <td>Aantal exemplaren</td> 
                             <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">+</button></td>
                         </tr>`
                     data.forEach(book => {
@@ -92,6 +93,9 @@
                                 <td>${book.format}</td>
                                 <td>${book.edition}</td>
                                 <td>${book.language}</td>
+                                <td>${book.bookCopys}</td>
+                                
+                                
                                 <td></td>
                                 <td style="text-align: right"><button type="button" onclick="getCopies(${book.id})";" class="btn btn-success"  >Klap uit</button></td>
                                 <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html?id=${book.id}';" class="btn btn-success">Wijzig</button></td> 
@@ -107,7 +111,10 @@
                 });
         }
 
+
+        
         searchBooksAdmin();
+        getCopies();
 
         function redirectToAnotherPage(bookId) {
 
@@ -123,11 +130,10 @@
 
                     let booksAdminHtml = `
                         <tr>
-                            <td>Exemplaar ID</td>
-                            <td>Verkeert in staat</td>
-                            <td>Beschikbaar</td>
-                            <td>Boek nummering</td>
-                            <td>Buiten gebruik</td>
+                            <td>Boeknummer</td>
+                            <td>Conditie van het boek</td>
+                            <td>Status</td>
+                            
                         </tr>
                     `
                     data.forEach(bookcopy => {
@@ -136,9 +142,9 @@
                             let icon = '';
                             let icon1 = '';
                             if (bookcopy.available) {
-                                icon = 'Uitleenbaar';
+                                icon = 'Aanwezig';
                             } else {
-                                icon = 'Niet uitleenbaar'
+                                icon = 'Uitgeleend'
                             }
                             if (bookcopy.outOfUse) {
                                 icon1 = 'Buiten gebruik';
@@ -147,10 +153,9 @@
                             }
                             booksAdminHtml += `
                             <tr>
-                                <td>${bookcopy.id}</td>
+                                <td>${bookID+"."+bookcopy.tagNumber}</td>
                                 <td>${bookcopy.status}</td>
                                 <td>${icon}</td>
-                                <td>${bookID+"."+bookcopy.tagNumber}</td>
                                 <td>${icon1}</td>
                                 <td></td>
                                 <td></td>                             
