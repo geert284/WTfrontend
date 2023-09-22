@@ -124,9 +124,9 @@
                     let booksAdminHtml = `
                         <tr>
                             <td>Exemplaar ID</td>
-                            <td>Staat</td>
+                            <td>Verkeert in staat</td>
                             <td>Beschikbaar</td>
-                            <td>Tagnummer</td>
+                            <td>Boek nummering</td>
                             <td>Buiten gebruik</td>
                         </tr>
                     `
@@ -136,21 +136,21 @@
                             let icon = '';
                             let icon1 = '';
                             if (bookcopy.available) {
-                                icon = '<img src="images/check-circle.svg">';
+                                icon = 'Uitleenbaar';
                             } else {
-                                icon = '<img src="images/circle.svg">'
+                                icon = 'Niet uitleenbaar'
                             }
                             if (bookcopy.outOfUse) {
-                                icon1 = '<img src="images/check-circle.svg">';
+                                icon1 = 'Buiten gebruik';
                             } else {
-                                icon1 = '<img src="images/circle.svg">'
+                                icon1 = 'In gebruik'
                             }
                             booksAdminHtml += `
                             <tr>
                                 <td>${bookcopy.id}</td>
                                 <td>${bookcopy.status}</td>
                                 <td>${icon}</td>
-                                <td>${bookcopy.tagNumber}</td>
+                                <td>${bookID+"."+bookcopy.tagNumber}</td>
                                 <td>${icon1}</td>
                                 <td></td>
                                 <td></td>                             
