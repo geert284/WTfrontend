@@ -13,13 +13,20 @@
 
 </head>
 
-<body>
+<body onload="checkAdmin()">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
 
 
     <script>
+        function checkAdmin() {
+            let admin = localStorage.getItem('WT_ADMIN');
+            if (admin == 'true') {
+                document.getElementById("adminSpan").style.display = "block";
+            }
+        }
+
         function createBook() {
             // Formulier uitlezen
             let titleInput = document.getElementById('title-input').value;
@@ -133,25 +140,25 @@
                     data.forEach(bookcopy => {
                         let bookIDfromDB = bookcopy.bookId
                         if (bookIDfromDB == bookID) {
-                            let icon = '';
-                            let icon1 = '';
+                            let message1 = '';
+                            let message2 = '';
                             if (bookcopy.available) {
-                                icon = '<img src="images/check-circle.svg">';
+                                message1 = "Ja";
                             } else {
-                                icon = '<img src="images/circle.svg">'
+                                message1 = "Nee";
                             }
                             if (bookcopy.outOfUse) {
-                                icon1 = '<img src="images/check-circle.svg">';
+                                message2 = "Ja";
                             } else {
-                                icon1 = '<img src="images/circle.svg">'
+                                message2 = "Nee";
                             }
                             booksAdminHtml += `
                             <tr>
                                 <td>${bookcopy.id}</td>
                                 <td>${bookcopy.status}</td>
-                                <td>${icon}</td>
+                                <td>${message1}</td>
                                 <td>${bookcopy.tagNumber}</td>
-                                <td>${icon1}</td>
+                                <td>${message2}</td>
                                 <td></td>
                                 <td></td>                             
                                 <td style="text-align: right"><button type="button"  onclick="window.location.href = 'adjust-bookcopy.html?id=${bookcopy.id}';" class="btn btn-success">Wijzig</button></td>
@@ -218,11 +225,63 @@
 
     </script>
 
-    <div data-component="header"></div>
-    <br><br><br>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light nav-underline">
+        <a class="navbar-brand" href="home-page.html">
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <!-- padding is impossible with bootstrap -->
+            <img src="images/WT-logo.png" width="210" height="50" class="d-inline-block align-top" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="library.html">Bibliotheek<span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="my-books.html">Mijn boeken</a>
+            </li>
+            <span id="adminSpan" style="display: none;">
+                <li class="nav-item dropdown" id="adminDropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Administratie
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="res-and-loans.html">
+                        <img src="images/list.svg">
+                        &nbsp&nbspReserveringen en leningen beheren</a>
+                    <a class="dropdown-item" href="manage-books.html">
+                        <img src="images/book-open.svg">
+                        &nbsp&nbspBoeken beheren</a>
+                    <a class="dropdown-item" href="manage-users.html">
+                        <img src="images/users.svg">
+                        &nbsp&nbspGebruikers beheren</a>
+                    </div>
+                </li>
+            </span>
+            <li class="nav-item dropdown position-absolute bottom-0 end-0 translate-middle">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Mijn account&nbsp&nbsp
+                    <img src="images/user.svg">
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="my-account.html">
+                    <img src="images/settings.svg">
+                    &nbsp&nbspMijn gegevens</a>
+                <a class="dropdown-item" href="login-page.html">
+                    <img src="images/log-out.svg">
+                    &nbsp&nbspUitloggen</a>
+                </div>
+            </li>
+            </ul>
+        </div>
+    </nav>
+    <br>
 
     <div class="body-text">
         <h2>Boeken beheren</h2>
+        <br>
+        
         <table id="bookadmin-table"></table>
         <br><br><br>
 
