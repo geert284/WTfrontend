@@ -92,7 +92,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal"
             data-bs-target="#confirmModal" onclick="finishReservation()">Reservering voltooien</button>
           <!-- add onclick event  -->
         </div>
@@ -113,7 +113,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-dismiss="modal"
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal"
             data-bs-target="#confirmModal" onclick="finishLoan()">Lening voltooien</button>
           <!-- add onclick event -->
         </div>
@@ -154,8 +154,8 @@
           reservationsTable.innerHTML = `<tr>
                             <th>Titel</th>
                             <th>Persoon</th>
-                            <th>Boek nummer</th>
-                            <th>Reserverings datum</th>
+                            <th>Boeknummer</th>
+                            <th>Reserveringsdatum</th>
                             <th>Boek beschikbaar</th>
                             <th>Reservering voltooien</th>
                         </tr>${tableHTML}`;
@@ -181,8 +181,8 @@
           loansTable.innerHTML = `<tr>
                             <th>Titel</th>
                             <th>Persoon</th>
-                            <th>Boek nummer</th>
-                            <th>Lenings datum</th>
+                            <th>Boeknummer</th>
+                            <th>Leningsdatum</th>
                             <th>Lening voltooien</th>
                         </tr>${tableHTML}`;
         });
@@ -206,9 +206,9 @@
           historyTableRes.innerHTML = `<tr>
                             <th>Titel</th>
                             <th>Persoon</th>
-                            <th>Boek nummer</th>
-                            <th>Reserverings datum</th>
-                            <th>Reserverings type</th>
+                            <th>Boeknummer</th>
+                            <th>Reserveringsdatum</th>
+                            <th>Reserveringstype</th>
                         </tr>${tableHTML}`;
         });
     };
@@ -231,9 +231,9 @@
           historyTableLoans.innerHTML = `<tr>
                             <th>Titel</th>
                             <th>Persoon</th>
-                            <th>Boek nummer</th>
-                            <th>Lenings datum</th>
-                            <th>Inleverings datum</th>
+                            <th>Boeknummer</th>
+                            <th>Leningsdatum</th>
+                            <th>Inleverdatum</th>
                         </tr>${tableHTML}`;
         });
     };
