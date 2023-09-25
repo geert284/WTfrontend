@@ -191,11 +191,8 @@
             const availabiltyValue = availablilyFilter.value;
 
             try {
-                const response = await fetch('http://localhost:8080/book/all');
+                const response = await fetch('http://localhost:8080/book/library');
                 const data = await response.json();
-
-                // Add available copies information to the filtered books
-                const booksWithCopies = await addAvailableCopiesToBooks(data);
 
                 // Filter the books based on the provided search criteria
                 let filteredBooks = searchTerm ? booksWithCopies.filter(book => {
@@ -228,7 +225,7 @@
               <td>${book.category}</td>
               <td>${book.edition}</td> 
               <td>${book.language}</td>
-              <td>${book.availableCopies}</td>
+              <td>${book.bookCopies}</td>
           </tr>`;
                 }).join('');
 
@@ -325,42 +322,6 @@
 
         // Roep getSearchTermFromURL aan om de zoekterm uit de URL te halen en in te vullen
         getSearchTermFromURL();
-
-        // Functie die telt het aantal beschikbare copys van alle boeken
-        function countAvailableCopys() {
-            return fetch('http://localhost:8080/bookcopy/all')
-                .then(response => response.json())
-                .then(book_copys => {
-                    let count = {};
-
-                    // Loop door alle boeken
-                    for (let i = 0; i < book_copys.length; i++) {
-                        if (book_copys[i].available) {
-                            const bookId = book_copys[i].bookId;
-                            count[bookId] = (count[bookId] || 0) + 1;
-                        }
-                    }
-
-                    return count;
-                });
-        }
-
-        // Function to add counts of available copies to the books array
-        async function addAvailableCopiesToBooks(books) {
-            try {
-                const counts = await countAvailableCopys();
-
-                // Loop through the books array and add the count property to each book
-                for (let i = 0; i < books.length; i++) {
-                    books[i].availableCopies = counts[books[i].id] || 0;
-                }
-
-                return books;
-            } catch (error) {
-                console.error('Error adding available copies to books:', error);
-                throw error;
-            }
-        }
        
         //variable to save current book
         let currentBookId = 0;
