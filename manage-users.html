@@ -53,7 +53,7 @@
                                     <td>${account.firstName} ${account.lastName}</td>
                                     <td>${account.email}</td>
                                     <td>${icon}</td>
-                                    <td style="text-align: right"><button type="button" onclick="deleteThisUser(${account.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Verwijder</button></td>
+                                    <td style="text-align: right"><button type="button" onclick="deleteThisUser(${account.id})" class="btn btn-success" data-bs-toggle="modal">Verwijder</button></td>
                                 </tr>
                             `
                         // Fill table with pending accounts
@@ -111,7 +111,7 @@
                 })
                 document.forms['inputForm'].reset();
                 closeModal();
-                location.reload();
+                setTimeout(function(){ window.location.reload(); }, 300);
             } else {
                 document.getElementById('emailSpan').style.display = "block";
             }
@@ -120,6 +120,23 @@
 
         function deleteThisUser(userID) {
             localStorage.setItem('WT_DELETE_USER', userID);
+            // check if user has open loans
+            fetch(`http://localhost:8080/account/loans/${userID}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+            })
+            .then(response => {
+                    return response.json();
+            })
+            .then(message => {
+                if (message == true) {
+                    openModal('pendingLoanModal');
+                } else {
+                    openModal('archiveMyUser');
+                }
+            })
         }
 
         // Archives user in DB (active true to false)
@@ -135,7 +152,13 @@
                 },
                 body: JSON.stringify(archiveThisUser)
             })
-            location.reload();
+            setTimeout(function(){ window.location.reload(); }, 300);
+        }
+
+        // Opens personal info modal if user is registering
+        function openModal(modalId) {
+            let myModal = new bootstrap.Modal(document.getElementById(modalId), {});
+            myModal.show();
         }
 
         // Closes register modal manually
@@ -209,11 +232,11 @@
     <table id="pending-user-table"></table>
 
     <!-- Modal pop-up for deleting users WITHOUT loans -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="archiveMyUser" tabindex="-1" aria-labelledby="archiveMyUserLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Gebruiker verwijderen</h1>
+                    <h1 class="modal-title fs-5" id="archiveMyUserLabel">Gebruiker verwijderen</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -227,7 +250,7 @@
         </div>
     </div>
 
-    <!-- Modal pop-up for deleting users WITH pending loans
+    <!-- Modal pop-up for deleting users WITH pending loans -->
     <div class="modal fade" id="pendingLoanModal" tabindex="-1" aria-labelledby="pendingLoanModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -236,14 +259,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p>Dit account mag niet verwijderd worden. Voltooi eerst de leningen die verbonden zijn aan dit account.</p>
+                            <p>Dit account mag niet worden verwijderd. Voltooi eerst de leningen die verbonden zijn aan dit account.</p>
                         </div>
                     <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 
     <!-- Modal pop-up for adding users -->
     <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
