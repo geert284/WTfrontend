@@ -76,7 +76,7 @@
             <h2 class="accordion-header" id="headingOne">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                     aria-expanded="true" aria-controls="collapseOne">
-                    Reserveringen
+                    Beschikbare reserveringen
                 </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
@@ -87,13 +87,27 @@
             </div>
         </div>
         <div class="accordion-item">
-            <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    Leningen
+            <h2 class="accordion-header" id="headinTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                    aria-expanded="false" aria-controls="collapseTwo">
+                    Wachtende reserveringen
                 </button>
             </h2>
             <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                data-bs-parent="#reservationsAccordion">
+                <div class="accordion-body">
+                    <table class="table table-striped" id="awaitingReservationsTable"></table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Leningen
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
                 data-bs-parent="#reservationsAccordion">
                 <div class="accordion-body">
                     <table class="table table-striped" id="loansTable"></table>
@@ -146,6 +160,7 @@
         }
 
         const reservationsTable = document.getElementById('reservationsTable');
+        const awaitingReservationsTable = document.getElementById('awaitingReservationsTable');
         const loansTable = document.getElementById('loansTable');
         const historyTableRes = document.getElementById('historyTableRes');
         const historyTableLoans = document.getElementById('historyTableLoans');
@@ -158,14 +173,13 @@
                 .then(response => response.json())
                 .then(data => {
                     const tableHTML = data.map(reservation => {
-                        const tagNumber = reservation.tagNumber !== 0 ? reservation.tagNumber : 'N/A'; // Check if tagNumber is not equal to 0
-                        resType = reservation.tagNumber !== 0 ? "res" : "aRes";
+                        resType = reservation.tagNumber !== "" ? "res" : "aRes";
                         return `<tr>
                   <td>${reservation.title} </td>
-                  <td>${tagNumber}</td> <!-- Display reservation.tagNumber or 'N/A' -->
+                  <td>${reservation.tagNumber}</td> <!-- Display reservation.tagNumber or 'N/A' -->
                   <td>${reservation.reservationDate}</td>
                   <td>${reservation.available ? "Ja" : "Nee"}</td>
-                  <td><button class="" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
+                  <td><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
                     data-bs-title="${reservation.title}" data-bs-id="${reservation.id}" data-bs-resType= "${resType}"> Annuleren </button></td>
               </tr>`;
                     }).join('');
@@ -174,6 +188,31 @@
                     reservationsTable.innerHTML = `<tr>
                                 <th>Titel</th>
                                 <th>Boeknummer</th>
+                                <th>Reserveringsdatum</th>
+                                <th>Boek beschikbaar</th>
+                                <th>Reservering annuleren</th>
+                            </tr>${tableHTML}`;
+                });
+        };
+
+        function createAwaitingReservationTable() {
+            fetch(`http://localhost:8080/account/getAwaitingReservations/${localStorage.getItem('WT_TOKEN')}`)
+                .then(response => response.json())
+                .then(data => {
+                    const tableHTML = data.map(reservation => {
+                        resType = reservation.tagNumber !== "" ? "res" : "aRes";
+                        return `<tr>
+                  <td>${reservation.title} </td>
+                  <td>${reservation.reservationDate}</td>
+                  <td>${reservation.available ? "Ja" : "Nee"}</td>
+                  <td><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
+                    data-bs-title="${reservation.title}" data-bs-id="${reservation.id}" data-bs-resType= "${resType}"> Annuleren </button></td>
+              </tr>`;
+                    }).join('');
+
+                    // Add the table to the HTML
+                    awaitingReservationsTable.innerHTML = `<tr>
+                                <th>Titel</th>
                                 <th>Reserveringsdatum</th>
                                 <th>Boek beschikbaar</th>
                                 <th>Reservering annuleren</th>
@@ -201,6 +240,7 @@
                             </tr>${tableHTML}`;
                 });
         };
+
         function createClosedLoansTable() {
             fetch(`http://localhost:8080/account/getLoansFinished/${localStorage.getItem('WT_TOKEN')}`)
                 .then(response => response.json())
@@ -227,6 +267,7 @@
         createClosedLoansTable();
         createReservationTable();
         createLoansTable();
+        createAwaitingReservationTable();
 
         let currentResId = 0;
         // Function that changes the content of the modal
