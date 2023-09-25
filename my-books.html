@@ -251,32 +251,32 @@
                 fetch("http://localhost:8080/reservation/cancel", {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('WT_TOKEN')
                     },
                     body: JSON.stringify(CancelReservationDto)
 
                 })
                     .then(response => {
-                        alert('Reservering annuleren gelukt!');                        
+                        //alert('Reservering annuleren gelukt!');                        
                     })
                     .catch(error => {
-                        alert('Er is iets fouts gegaan');
                     });
             }
             else {
                 fetch("http://localhost:8080/awaitingReservation/cancel", {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('WT_TOKEN')
                     },
                     body: JSON.stringify(CancelReservationDto)
 
                 })
                     .then(response => {
-                        alert('Reservering annuleren gelukt!');
+                        //alert('Reservering annuleren gelukt!');
                     })
                     .catch(error => {
-                        alert('Er is iets fouts gegaan');
                     });
             }
             location.reload();
