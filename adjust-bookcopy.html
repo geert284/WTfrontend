@@ -194,8 +194,6 @@
             }	
         
         
-
-        
         
         function updateBookCopy() {
             let availableInputValue = document.getElementById('available-input').value;
@@ -219,6 +217,7 @@
             })
             .then(response => {
                 alert('Is goedgegaan');
+                loadBookCopy();
 
             })
             .catch(error => {
