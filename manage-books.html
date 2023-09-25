@@ -23,6 +23,45 @@
     
         <div class="body-text">
             <h2>Boeken beheren</h2>
+
+            <div id="book-table">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Titel</th>
+                            <th scope="col">Auteur</th>
+                            <th scope="col">ISBN</th>
+                            <th scope="col">Categorie</th>
+                            <th scope="col">Bindwijze</th>
+                            <th scope="col">Editie</th>
+                            <th scope="col">Taal</th>
+                            <th scope="col">Aantal exemplaren</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookadmin-table">
+                        <!-- Table rows will be added dynamically using JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="collapse" id="bookcopy-table">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Boeknummer</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Conditie van het boek</th>
+                            <th scope="col"></th>
+                            <th></th>    
+                        </tr>
+                    </thead>
+                    <tbody id="bookcopy-table-body">
+                        <!-- Generated table rows will go here -->
+                    </tbody>
+                </table>
+            </div>
+    
+
             <table id="bookadmin-table"></table>
             <br><br><br>
     
@@ -215,10 +254,11 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>   
 
 
 
+    
     <script>
         function checkAdmin() {
             let admin = localStorage.getItem('WT_ADMIN');
@@ -390,20 +430,8 @@
                 .then(data => {
                     console.log('Data', data);
 
-                    let booksAdminHtml = `
-                        <tr id="table-header">
-                            <td>Titel</td>
-                            <td>Auteur</td>
-                            <td>ISBN</td>
-                            <td>Categorie</td>
-                            <td>Bindwijze</td>
-                            <td>Editie</td>
-                            <td>Taal</td>
-                            <td>Aantal exemplaren</td>
-                            
-                            <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addbookModal">Boek toevoegen</button></td>
+                    let booksAdminHtml = "";
 
-                        </tr>`
                     data.forEach(book => {
                         booksAdminHtml += `
                             <tr>
@@ -418,7 +446,17 @@
                                 
                                 
                                 <td></td>
-                                <td style="text-align: right"><button type="button" onclick="getCopies(${book.id})";" class="btn btn-success">Klap uit</button></td>
+
+                                <td style="text-align: right"> 
+                                    <button type="button" 
+                                        onclick="getCopies(${book.id})" 
+                                        class="btn btn-success" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#bookcopy-table" 
+                                        aria-expanded="false" 
+                                        aria-controls="collapseWidthExample">
+                                    Klap uit
+                                    </button>
                                 <td style="text-align: right"><button type="button" data-bs-id="${book.id}" data-bs-title="${book.title}" 
                                     data-bs-author="${book.author}" data-bs-isbn="${book.isbn}" data-bs-format="${book.format}" data-bs-category="${book.category}" 
                                     data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})saveid" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookModal">Wijzig</button></td> 
@@ -426,17 +464,21 @@
                                     data-bs-author="${book.author}" data-bs-isbn="${book.isbn}" data-bs-format="${book.format}" data-bs-category="${book.category}" 
                                     data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addbookcopyModal">Exemplaar toevoegen</button></td> 
                                  
+
                             </tr>
-                        `
-                        /* <td><button onclick="deleteBook(${book.id})";" class="btn btn-success">Boek verwijderen</button></td> */
+                        `;
+
+
                     });
 
-                    document.getElementById('bookadmin-table').innerHTML = booksAdminHtml;
+                    document.getElementById('bookadmin-table').innerHTML = booksAdminHtml; 
+
+                    
 
                 });
         }
 
-
+        
         
         searchBooksAdmin();
         getCopies();
@@ -451,14 +493,8 @@
                 .then(data => {
                     console.log('Data', data);
 
-                    let booksAdminHtml = `
-                        <tr>
-                            <td>Boeknummer</td>
-                            <td>Conditie van het boek</td>
-                            <td>Status</td>
-                            
-                        </tr>
-                    `
+                    let booksAdminHtml = "";   
+
                     data.forEach(bookcopy => {
                         let bookIDfromDB = bookcopy.bookId
                         if (bookIDfromDB == bookID) {
@@ -477,8 +513,8 @@
                             booksAdminHtml += `
                             <tr>
                                 <td>${bookID+"."+bookcopy.tagNumber}</td>
-                                <td>${bookcopy.status}</td>
                                 <td>${icon}</td>
+                                <td>${bookcopy.status}</td>
                                 <td>${icon1}</td>
                                 <td></td>
                                 <td></td>                             
@@ -490,7 +526,7 @@
 
                     });
 
-                    document.getElementById('bookcopy-table').innerHTML = booksAdminHtml;
+                    document.getElementById('bookcopy-table-body').innerHTML = booksAdminHtml;
 
                 });
         }
@@ -618,67 +654,9 @@
 
     </script>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light nav-underline">
-        <a class="navbar-brand" href="home-page.html">
-            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <!-- padding is impossible with bootstrap -->
-            <img src="images/WT-logo.png" width="210" height="50" class="d-inline-block align-top" alt="">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="library.html">Bibliotheek<span class="sr-only"></span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="my-books.html">Mijn boeken</a>
-            </li>
-            <span id="adminSpan" style="display: none;">
-                <li class="nav-item dropdown" id="adminDropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Administratie
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="res-and-loans.html">
-                        <img src="images/list.svg">
-                        &nbsp&nbspReserveringen en leningen beheren</a>
-                    <a class="dropdown-item" href="manage-books.html">
-                        <img src="images/book-open.svg">
-                        &nbsp&nbspBoeken beheren</a>
-                    <a class="dropdown-item" href="manage-users.html">
-                        <img src="images/users.svg">
-                        &nbsp&nbspGebruikers beheren</a>
-                    </div>
-                </li>
-            </span>
-            <li class="nav-item dropdown position-absolute bottom-0 end-0 translate-middle">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Mijn account&nbsp&nbsp
-                    <img src="images/user.svg">
-                </a>
-                <div class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="my-account.html">
-                    <img src="images/settings.svg">
-                    &nbsp&nbspMijn gegevens</a>
-                <a class="dropdown-item" href="login-page.html">
-                    <img src="images/log-out.svg">
-                    &nbsp&nbspUitloggen</a>
-                </div>
-            </li>
-            </ul>
-        </div>
-    </nav>
-    <br>
 
-    <div class="body-text">
-        <h2>Boeken beheren</h2>
-        <br>
-        
-        <table id="bookadmin-table"></table>
-        <br><br><br>
+    
 
-        <table id="bookcopy-table"></table>
 
 </body>
 
