@@ -10,16 +10,96 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
 
 </head>
-<body onload="openModal()">
+<body onload="openModal(); checkAdmin()">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     
-    <div data-component="header"></div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light nav-underline">
+        <a class="navbar-brand" href="home-page.html">
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <!-- padding is impossible with bootstrap -->
+            <img src="images/WT-logo.png" width="210" height="50" class="d-inline-block align-top" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="library.html">Bibliotheek<span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="my-books.html">Mijn boeken</a>
+            </li>
+            <span id="adminSpan" style="display: none;">
+                <li class="nav-item dropdown" id="adminDropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Administratie
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="res-and-loans.html">
+                        <img src="images/list.svg">
+                        &nbsp&nbspReserveringen en leningen beheren</a>
+                    <a class="dropdown-item" href="manage-books.html">
+                        <img src="images/book-open.svg">
+                        &nbsp&nbspBoeken beheren</a>
+                    <a class="dropdown-item" href="manage-users.html">
+                        <img src="images/users.svg">
+                        &nbsp&nbspGebruikers beheren</a>
+                    </div>
+                </li>
+            </span>
+            <li class="nav-item dropdown position-absolute bottom-0 end-0 translate-middle">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Mijn account&nbsp&nbsp
+                    <img src="images/user.svg">
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="my-account.html">
+                    <img src="images/settings.svg">
+                    &nbsp&nbspMijn gegevens</a>
+                <a class="dropdown-item" href="login-page.html">
+                    <img src="images/log-out.svg">
+                    &nbsp&nbspUitloggen</a>
+                </div>
+            </li>
+            </ul>
+        </div>
+    </nav>
+    <br>
     
     <h2>Home</h2>
+    <br>
     <h4>Welkom<span id="nameSpan"></span></h4>
-
+    <p>Dit is de website voor de bibliotheek van Working Talent.</p>
     <input type="text" id="searchBar" placeholder="Zoek een boek">
     <button type="button" class="btn btn-success col-2" onclick="navigateToBooks()">Zoek</button>
+    <br><br>
+
+
+
+    <div class="homeContainer">
+        <div class="box">
+            <img src="images/books-13500.png" width="100" height="100" style="margin-left: auto; margin-right: auto; display: block;">
+            <br>
+            <p>
+               In de Bibliotheek staan alle boeken die Working Talent te leen heeft. Je kunt hier filteren op categorie, soort, taal en beschikbaarheid.<br>
+                Je kunt een boek reserveren door op de titel van het boek te klikken en te bevestigen. Is het boek dat jij wilt lenen niet beschikbaar? Geen punt! Je kunt gewoon een reservering maken en deze zal worden omgezet tot een lening zodra er weer een exemplaar beschikbaar is.<br><br>
+            </p>
+        </div>
+        <div class="box">
+            <img src="images/opened-book-3170.png" width="100" height="100" style="margin-left: auto; margin-right: auto; display: block;">
+            <br>
+            <p>
+                Onder 'Mijn boeken' komen al jouw reserveringen en leningen te staan. Hier kun je ook je bekijken welke boeken je al eens hebt geleend.<br>
+            </p>
+        </div>
+        <div class="box">
+            <img src="images/manage-260.png" width="100" height="100" style="margin-left: auto; margin-right: auto; display: block;">
+            <br>
+            <p>
+                Rechtsboven op de pagina kun je met de dropdown je persoonsgegevens aanpassen of een nieuw wachtwoord instellen.<br><br>
+            </p>
+        </div>
+    </div>
 
     <!-- Modal for submitting personal info and new password -->
     <div class="modal fade" id="changePasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
@@ -54,6 +134,13 @@
     </div>
     
     <script>
+        function checkAdmin() {
+            let admin = localStorage.getItem('WT_ADMIN');
+            if (admin == 'true') {
+                document.getElementById("adminSpan").style.display = "block";
+            }
+        }
+
         function displayName() {
             if (localStorage.getItem('WT_FIRSTNAME') != 'null')
             document.getElementById('nameSpan').innerHTML = ', ' + localStorage.getItem('WT_FIRSTNAME');
