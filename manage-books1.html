@@ -67,16 +67,6 @@
             });
         }
 
-        function checkIfButtonIsCollapsed() {
-            let button = document.querySelector('.btn.btn-success'); // Assuming this is the target button
-
-            if (button.classList.contains('collapsed')) {
-                console.log('Button is currently collapsed');
-            } else {
-                console.log('Button is currently not collapsed');
-            }
-    }
-
         function searchBooksAdmin() {
             fetch('http://localhost:8080/book/all')
                 .then(response => response.json())
@@ -112,7 +102,14 @@
                                 </td>
                                 <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html?id=${book.id}';" class="btn btn-success">Wijzig</button></td> 
                                 <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-bookcopy.html?id=${book.id}';" class="btn btn-success"">Exemplaar toevoegen</button></td> 
+                                
 
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="8"> <!-- Use colspan to span across all columns -->
+                                <div id="bookcopies-${book.id}" class="bookcopies"></div> <!-- This div will hold the book copies -->
+                                </td>
                             </tr>
                         `;
 
@@ -137,49 +134,40 @@
         }
 
 
-        function getCopies(bookID) { // onclick=getCopies(${bookId})
+        function getCopies(bookID) {
             fetch('http://localhost:8080/bookcopy/all')
                 .then(response => response.json())
                 .then(data => {
                     console.log('Data', data);
 
-                    let booksAdminHtml = "";   
-
                     data.forEach(bookcopy => {
-                        let bookIDfromDB = bookcopy.bookId
+                        let bookIDfromDB = bookcopy.bookId;
                         if (bookIDfromDB == bookID) {
                             let icon = '';
                             let icon1 = '';
                             if (bookcopy.available) {
                                 icon = 'Aanwezig';
                             } else {
-                                icon = 'Uitgeleend'
+                                icon = 'Uitgeleend';
                             }
                             if (bookcopy.outOfUse) {
                                 icon1 = 'Buiten gebruik';
                             } else {
-                                icon1 = 'In gebruik'
+                                icon1 = 'In gebruik';
                             }
-                            booksAdminHtml += `
-                            <tr>
-                                <td>${bookID+"."+bookcopy.tagNumber}</td>
-                                <td>${icon}</td>
-                                <td>${bookcopy.status}</td>
-                                <td>${icon1}</td>
-                                <td></td>
-                                <td></td>                             
-                                <td style="text-align: right"><button type="button"  onclick="window.location.href = 'adjust-bookcopy.html?id=${bookcopy.id}';" class="btn btn-success">Wijzig</button></td>
-   
-                            </tr>
-                        `
+
+                            let bookcopiesHtml = `
+                                <div>
+                                    ${bookID + "." + bookcopy.tagNumber} - ${icon} - ${bookcopy.status} - ${icon1}
+                                </div>
+                            `;
+
+                            document.getElementById(`bookcopies-${bookID}`).innerHTML += bookcopiesHtml;
                         }
-
                     });
-
-                    document.getElementById('bookcopy-table-body').innerHTML = booksAdminHtml;
-
                 });
         }
+
 
 
         function deleteBook(bookId) {
@@ -308,6 +296,7 @@
                         <button type="button" class="btn btn-success disabled" onclick="createBook()" data-bs-dismiss="modal" id="saveButton">Toevoegen</button>
                     </div>
                 </div>
+                
             </div>
         </div>
 
@@ -323,6 +312,10 @@
                         <th scope="col">Conditie van het boek</th>
                         <th scope="col"></th>
                         <th></th>    
+                        <td></td>
+                                <td colspan="8"> <!-- Use colspan to span across all columns -->
+                            <div id="bookcopies-${book.id}" class="bookcopies"></div> <!-- This div will hold the book copies -->
+                        </td>
                     </tr>
                 </thead>
                 <tbody id="bookcopy-table-body">
