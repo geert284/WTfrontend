@@ -18,6 +18,115 @@
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
 
+        <div data-component="header"></div>
+        <br><br><br>
+    
+        <div class="body-text">
+            <h2>Boeken beheren</h2>
+            <table id="bookadmin-table"></table>
+            <br><br><br>
+    
+            <table id="bookcopy-table"></table>
+    
+            <div class="modal fade" id="addbookModal" tabindex="-1" aria-labelledby="addbookModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addbookModalLabel">Boek toevoegen</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="title-input" class="col-form-label">Titel:</label>
+                                    <input type="text" class="form-control" id="title-input" onkeyup="checkForm()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="isbn-input" class="col-form-label">ISBN:</label>
+                                    <input type="text" class="form-control" id="isbn-input" onkeyup="checkForm()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="category-input" class="col-form-label">Categorie:</label>
+                                    <input type="text" class="form-control" id="category-input" onkeyup="checkForm()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="format-input" class="col-form-label">Soort:</label>
+                                    <input type="text" class="form-control" id="format-input" onkeyup="checkForm()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="language-input" class="col-form-label">Taal:</label>
+                                    <input type="text" class="form-control" id="language-input" onkeyup="checkForm()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="edition-input" class="col-form-label">Editie:</label>
+                                    <input type="text" class="form-control" id="edition-input" onkeyup="checkForm()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="author-input" class="col-form-label">Auteur:</label>
+                                    <input type="text" class="form-control" id="author-input" onkeyup="checkForm()">
+                                </div>
+    
+                                
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                            <button type="button" class="btn btn-success disabled" onclick="createBook()" data-bs-dismiss="modal" id="saveButton">Toevoegen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="modal fade" id="adjustbookModal" tabindex="-1" aria-labelledby="adjustbookModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="adjustbookModalLabel">Boek aanpassen</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="title-input" class="col-form-label">Titel:</label>
+                                    <input type="text" class="form-control" id="title-input2" onkeyup="checkForm2()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="isbn-input" class="col-form-label">ISBN:</label>
+                                    <input type="text" class="form-control" id="isbn-input2" onkeyup="checkForm2()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="category-input" class="col-form-label">Categorie:</label>
+                                    <input type="text" class="form-control" id="category-input2" onkeyup="checkForm2()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="format-input" class="col-form-label">Soort:</label>
+                                    <input type="text" class="form-control" id="format-input2" onkeyup="checkForm2()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="language-input" class="col-form-label">Taal:</label>
+                                    <input type="text" class="form-control" id="language-input2" onkeyup="checkForm2()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="edition-input" class="col-form-label">Editie:</label>
+                                    <input type="text" class="form-control" id="edition-input2" onkeyup="checkForm2()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="author-input" class="col-form-label">Auteur:</label>
+                                    <input type="text" class="form-control" id="author-input2" onkeyup="checkForm2()">
+                                </div>
+    
+                                
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                            <button type="button" class="btn btn-success disabled" onclick="updateBook()" data-bs-dismiss="modal" id="saveButton2">Aanpassen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
 
     <script>
         function checkAdmin() {
@@ -70,6 +179,55 @@
             });
         }
 
+        function saveId(id) {
+            localStorage.setItem('WT_BOOKID', id);
+        }
+
+
+        function updateBook() {
+            let bookId = localStorage.getItem('WT_BOOKID');
+            let titleInput = document.getElementById('title-input2').value;
+            let isbnInput = document.getElementById('isbn-input2').value;
+            let categoryInput = document.getElementById('category-input2').value;
+            let formatInput = document.getElementById('format-input2').value;
+            let languageInput = document.getElementById('language-input2').value;
+            let editionInput = document.getElementById('edition-input2').value;
+            let authorInput = document.getElementById('author-input2').value;
+
+            if(!Number.isInteger(Number(editionInput))) {
+                alert('Editie moet een integer zijn')
+                return;
+            }
+
+            // Maak hier een javascript object aan
+            let newBook = {
+                title: titleInput,
+                isbn: isbnInput,
+                category: categoryInput,
+                format: formatInput,
+                language: languageInput,
+                edition: editionInput,
+                author: authorInput,
+            }
+
+            console.log(bookId);
+            fetch(`http://localhost:8080/book/update/${bookId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newBook)
+            })
+            .then(response => {
+                alert('Is goedgegaan');
+                location.reload();
+            })
+            .catch(error => {
+                alert('Er is iets fouts gegaan');
+            });
+
+        }
+
         function searchBooksAdmin() {
             fetch('http://localhost:8080/book/all')
                 .then(response => response.json())
@@ -85,8 +243,10 @@
                             <td>Bindwijze</td>
                             <td>Editie</td>
                             <td>Taal</td>
-                            <td>Aantal exemplaren</td> 
-                            <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">+</button></td>
+                            <td>Aantal exemplaren</td>
+                            
+                            <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addbookModal">+</button></td>
+
                         </tr>`
                     data.forEach(book => {
                         booksAdminHtml += `
@@ -102,8 +262,10 @@
                                 
                                 
                                 <td></td>
-                                <td style="text-align: right"><button type="button" onclick="getCopies(${book.id})";" class="btn btn-success"  >Klap uit</button></td>
-                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'adjust-book.html?id=${book.id}';" class="btn btn-success">Wijzig</button></td> 
+                                <td style="text-align: right"><button type="button" onclick="getCopies(${book.id})";" class="btn btn-success">Klap uit</button></td>
+                                <td style="text-align: right"><button type="button" data-bs-id="${book.id}" data-bs-title="${book.title}" 
+                                    data-bs-author="${book.author}" data-bs-isbn="${book.isbn}" data-bs-format="${book.format}" data-bs-category="${book.category}" 
+                                    data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookModal">Wijzig</button></td> 
                                 <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-bookcopy.html?id=${book.id}';" class="btn btn-success"">Exemplaar toevoegen</button></td> 
                                  
                             </tr>
@@ -122,10 +284,8 @@
         getCopies();
 
         function redirectToAnotherPage(bookId) {
-
             window.location.href = 'adjust-book.html?bookId=${bookId}'
         }
-
 
         function getCopies(bookID) { // onclick=getCopies(${bookId})
             fetch('http://localhost:8080/bookcopy/all')
@@ -177,7 +337,6 @@
                 });
         }
 
-
         function deleteBook(bookId) {
             var confirmed = confirm("Are you sure you want to delete this book?");
 
@@ -224,7 +383,36 @@
             }
         }
 
+        function checkForm2() {
+            let title = document.getElementById('title-input2').value;
+            let isbn = document.getElementById('isbn-input2').value;
+            let category = document.getElementById('title-input2').value;
+            let format = document.getElementById('category-input2').value;
+            let language = document.getElementById('language-input2').value;
+            let edition = document.getElementById('edition-input2').value;
+            let author = document.getElementById('author-input2').value;
+            if (title.length != 0 && isbn.length != 0 && category.length != 0 && format.length != 0 && language.length != 0 && edition.length != 0 && author.length != 0) {
+                document.getElementById("saveButton2").className = "btn btn-success";
+            } else {
+                document.getElementById("saveButton2").className = "btn btn-success disabled";
+            }
+        }
 
+        booksModal = document.getElementById('adjustbookModal')
+
+        booksModal.addEventListener('show.bs.modal', function (event) {
+            console.log('test')
+            let link = event.relatedTarget;
+            let modalBody = booksModal.querySelector('.modal-body');
+
+            document.getElementById('title-input2').value = link.getAttribute('data-bs-title');
+            document.getElementById('author-input2').value = link.getAttribute('data-bs-author');
+            document.getElementById('isbn-input2').value = link.getAttribute('data-bs-isbn'); 
+            document.getElementById('format-input2').value = link.getAttribute('data-bs-format'); 
+            document.getElementById('category-input2').value = link.getAttribute('data-bs-category'); 
+            document.getElementById('edition-input2').value = link.getAttribute('data-bs-edition'); 
+            document.getElementById('language-input2').value = link.getAttribute('data-bs-language');             
+        });
 
     </script>
 
@@ -289,58 +477,6 @@
         <br><br><br>
 
         <table id="bookcopy-table"></table>
-
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Boek toevoegen</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <label for="title-input" class="col-form-label">Titel:</label>
-                                <input type="text" class="form-control" id="title-input" onkeyup="checkForm()">
-                            </div>
-                            <div class="form-group">
-                                <label for="isbn-input" class="col-form-label">ISBN:</label>
-                                <input type="text" class="form-control" id="isbn-input" onkeyup="checkForm()">
-                            </div>
-                            <div class="form-group">
-                                <label for="category-input" class="col-form-label">Categorie:</label>
-                                <input type="text" class="form-control" id="category-input" onkeyup="checkForm()">
-                            </div>
-                            <div class="form-group">
-                                <label for="format-input" class="col-form-label">Soort:</label>
-                                <input type="text" class="form-control" id="format-input" onkeyup="checkForm()">
-                            </div>
-                            <div class="form-group">
-                                <label for="language-input" class="col-form-label">Taal:</label>
-                                <input type="text" class="form-control" id="language-input" onkeyup="checkForm()">
-                            </div>
-                            <div class="form-group">
-                                <label for="edition-input" class="col-form-label">Editie:</label>
-                                <input type="text" class="form-control" id="edition-input" onkeyup="checkForm()">
-                            </div>
-                            <div class="form-group">
-                                <label for="author-input" class="col-form-label">Auteur:</label>
-                                <input type="text" class="form-control" id="author-input" onkeyup="checkForm()">
-                            </div>
-
-                            
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
-                        <button type="button" class="btn btn-success disabled" onclick="createBook()" data-bs-dismiss="modal" id="saveButton">Toevoegen</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
 
 </body>
 
