@@ -75,13 +75,27 @@
       <h2 class="accordion-header" id="headingOne">
         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
           aria-expanded="true" aria-controls="collapseOne">
-          Reserveringen
+          Beschikbare reserveringen
         </button>
       </h2>
       <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
         data-bs-parent="#reservationsAccordion">
         <div class="accordion-body">
           <table class="table table-striped" id="reservationsTable"></table>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingFive">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+          Wachtende reserveringen
+        </button>
+      </h2>
+      <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
+        data-bs-parent="#reservationsAccordion">
+        <div class="accordion-body">
+          <table class="table table-striped" id="awaitingReservationsTable"></table>
         </div>
       </div>
     </div>
@@ -182,6 +196,7 @@
 
 
     const reservationsTable = document.getElementById('reservationsTable');
+    const awaitingReservationsTable = document.getElementById('awaitingReservationsTable');
     const loansTable = document.getElementById('loansTable');
     const historyTableRes = document.getElementById('historyTableRes');
     const historyTableLoans = document.getElementById('historyTableLoans');
@@ -189,7 +204,7 @@
     const resModal = document.getElementById('resModal');
 
     function createReservationTable() {
-      fetch('http://localhost:8080/reservation/unprocessed', {
+      fetch('http://localhost:8080/reservation/unprocessed/available', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json', 
@@ -199,14 +214,13 @@
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(reservation => {
-            const tagNumber = reservation.tagNumber !== 0 ? reservation.tagNumber : 'N/A'; // Check if tagNumber is not equal to 0
             const button = reservation.available ? `<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
                 data-bs-title="${reservation.title}" data-bs-name="${reservation.accountName}" data-bs-id="${reservation.id}"> Boek uitlenen </button>`
                 : " "
             return `<tr>
               <td>${reservation.title} </td>
               <td>${reservation.accountName}</td>
-              <td>${tagNumber}</td> <!-- Display reservation.tagNumber or 'N/A' -->
+              <td>${reservation.tagNumber}</td> 
               <td>${reservation.reservationDate}</td>
               <td>${reservation.available ? "Ja" : "Nee"}</td>
               <td>${button}</td>
@@ -221,6 +235,35 @@
                             <th>Reserveringsdatum</th>
                             <th>Boek beschikbaar</th>
                             <th>Reservering voltooien</th>
+                        </tr>${tableHTML}`;
+        });
+    };
+
+    function createAwaitingReservationTable() {
+      fetch('http://localhost:8080/reservation/unprocessed/awaiting', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': localStorage.getItem('WT_TOKEN')
+                },
+            })
+        .then(response => response.json())
+        .then(data => {
+          const tableHTML = data.map(reservation => {
+            return `<tr>
+              <td>${reservation.title} </td>
+              <td>${reservation.accountName}</td>
+              <td>${reservation.reservationDate}</td>
+              <td>${reservation.available ? "Ja" : "Nee"}</td>
+          </tr>`;
+          }).join('');
+
+          // Add the table to the HTML
+          awaitingReservationsTable.innerHTML = `<tr>
+                            <th>Titel</th>
+                            <th>Persoon</th>
+                            <th>Reserveringsdatum</th>
+                            <th>Boek beschikbaar</th>
                         </tr>${tableHTML}`;
         });
     };
@@ -320,6 +363,7 @@
     };
 
     createReservationHistoryTable();
+    createAwaitingReservationTable(); 
     createClosedLoansTable();
     createReservationTable();
     createLoansTable();
