@@ -126,6 +126,97 @@
                 </div>
             </div>
 
+            <div class="modal fade" id="addbookcopyModal" tabindex="-1" aria-labelledby="addbookcopyModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addbookcopyModalLabel">Exemplaar toevoegen</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="state-input3" class="col-form-label">Status:</label>
+                                    <input type="text" class="form-control" id="state-input3" onkeyup="checkForm3()">
+                                </div>
+                                <br>
+                                <br>
+                                <div class="form-group">
+                                    <label for="title-input3" class="col-form-label">Titel:</label>
+                                    <input type="text" class="form-control" id="title-input3" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="isbn-input3" class="col-form-label">ISBN:</label>
+                                    <input type="text" class="form-control" id="isbn-input3" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category-input3" class="col-form-label">Categorie:</label>
+                                    <input type="text" class="form-control" id="category-input3" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="format-input3" class="col-form-label">Soort:</label>
+                                    <input type="text" class="form-control" id="format-input3" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="language-input3" class="col-form-label">Taal:</label>
+                                    <input type="text" class="form-control" id="language-input3" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edition-input3" class="col-form-label">Editie:</label>
+                                    <input type="text" class="form-control" id="edition-input3" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="author-input3" class="col-form-label">Auteur:</label>
+                                    <input type="text" class="form-control" id="author-input3" readonly>
+                                </div>
+                                       
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                            <button type="button" class="btn btn-success disabled" onclick="createBookCopy()" data-bs-dismiss="modal" id="saveButton3">Toevoegen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="adjustbookcopyModal" tabindex="-1" aria-labelledby="adjustbookcopyModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="adjustbookcopyModalLabel">Exemplaar aanpassen</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="state-input4" class="col-form-label">Status:</label>
+                                    <input type="text" class="form-control" id="state-input4" onkeyup="checkForm4()">
+                                </div>
+                                <div class="form-group">
+                                    <label for="available-input4" class="col-form-label">Beschikbaar:</label>
+                                    <select id="available-input4" >
+                                        <option value="true">True</option>
+                                        <option value="false">False</option>
+                                    </select> <br>
+                                </div>
+                                <div class="form-group">
+                                    <label for="outofuse-input4" class="col-form-label">Buiten gebruik:</label>
+                                    <select id="outofuse-input4">
+                                        <option value="true">True</option>
+                                        <option value="false">False</option>
+                                    </select> <br>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                            <button type="button" class="btn btn-success disabled" onclick="updateBookCopy()" data-bs-dismiss="modal" id="saveButton4">Aanpassen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
 
     <script>
@@ -183,6 +274,41 @@
             localStorage.setItem('WT_BOOKID', id);
         }
 
+        function saveCopyId(id) {
+            localStorage.setItem('WT_BOOKCOPYID', id);
+        }
+
+        function createBookCopy() {
+            let bookId = localStorage.getItem('WT_BOOKID');
+            let availableInputValue = true;
+            let statusInputValue = document.getElementById('state-input3').value;
+            let outOfUseInputValue = false;
+
+                // Maak hier een javascript object aan
+            let newBookCopy = {
+                available: availableInputValue,
+                status: statusInputValue,
+                outOfUse: outOfUseInputValue,
+                bookId: bookId,
+            }
+
+                // console.log(bookId);
+            fetch(`http://localhost:8080/bookcopy/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newBookCopy)
+            })
+                .then(response => {
+                    alert('Is goedgegaan');
+                    location.reload();
+                })
+                .catch(error => {
+                    alert('Er is iets fouts gegaan');
+                });
+
+            }
 
         function updateBook() {
             let bookId = localStorage.getItem('WT_BOOKID');
@@ -228,6 +354,36 @@
 
         }
 
+        function updateBookCopy() {
+            let bookCopyId = localStorage.getItem('WT_BOOKCOPYID');
+            let availableInputValue = document.getElementById('available-input4').value;
+            let statusInputValue = document.getElementById('state-input4').value;
+            let outofuseInputValue = document.getElementById('outofuse-input4').value;
+
+            // Maak hier een javascript object aan
+            let newBookCopy = {
+                available: availableInputValue,
+                status: statusInputValue,
+                outOfUse: outofuseInputValue,
+            }
+
+            console.log(bookCopyId);
+            fetch(`http://localhost:8080/bookcopy/update/${bookCopyId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newBookCopy)
+            })
+            .then(response => {
+                alert('Is goedgegaan');
+                location.reload();
+            })
+            .catch(error => {
+                alert('Er is iets fouts gegaan');
+            });
+        }
+
         function searchBooksAdmin() {
             fetch('http://localhost:8080/book/all')
                 .then(response => response.json())
@@ -245,7 +401,7 @@
                             <td>Taal</td>
                             <td>Aantal exemplaren</td>
                             
-                            <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addbookModal">+</button></td>
+                            <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addbookModal">Boek toevoegen</button></td>
 
                         </tr>`
                     data.forEach(book => {
@@ -265,8 +421,10 @@
                                 <td style="text-align: right"><button type="button" onclick="getCopies(${book.id})";" class="btn btn-success">Klap uit</button></td>
                                 <td style="text-align: right"><button type="button" data-bs-id="${book.id}" data-bs-title="${book.title}" 
                                     data-bs-author="${book.author}" data-bs-isbn="${book.isbn}" data-bs-format="${book.format}" data-bs-category="${book.category}" 
-                                    data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookModal">Wijzig</button></td> 
-                                <td style="text-align: right"><button type="button" onclick="window.location.href = 'add-bookcopy.html?id=${book.id}';" class="btn btn-success"">Exemplaar toevoegen</button></td> 
+                                    data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})saveid" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookModal">Wijzig</button></td> 
+                                <td style="text-align: right"><button type="button" data-bs-id="${book.id}" data-bs-title="${book.title}" 
+                                    data-bs-author="${book.author}" data-bs-isbn="${book.isbn}" data-bs-format="${book.format}" data-bs-category="${book.category}" 
+                                    data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addbookcopyModal">Exemplaar toevoegen</button></td> 
                                  
                             </tr>
                         `
@@ -324,7 +482,7 @@
                                 <td>${icon1}</td>
                                 <td></td>
                                 <td></td>                             
-                                <td style="text-align: right"><button type="button"  onclick="window.location.href = 'adjust-bookcopy.html?id=${bookcopy.id}';" class="btn btn-success">Wijzig</button></td>
+                                <td style="text-align: right"><button type="button" data-bs-id="${bookcopy.id}" onclick="saveId(${bookID}); saveCopyId(${bookcopy.bookId})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookcopyModal">Wijzig</button></td>
    
                             </tr>
                         `
@@ -398,12 +556,30 @@
             }
         }
 
-        booksModal = document.getElementById('adjustbookModal')
+        function checkForm3() {
+            let state = document.getElementById('state-input3').value;
+            if (state.length != 0) {
+                document.getElementById("saveButton3").className = "btn btn-success";
+            } else {
+                document.getElementById("saveButton3").className = "btn btn-success disabled";
+            }
+        }
 
-        booksModal.addEventListener('show.bs.modal', function (event) {
+        function checkForm4() {
+            let state = document.getElementById('state-input4').value;
+            if (state.length != 0) {
+                document.getElementById("saveButton4").className = "btn btn-success";
+            } else {
+                document.getElementById("saveButton4").className = "btn btn-success disabled";
+            }
+        }
+
+        booksModal2 = document.getElementById('adjustbookModal')
+
+        booksModal2.addEventListener('show.bs.modal', function (event) {
             console.log('test')
             let link = event.relatedTarget;
-            let modalBody = booksModal.querySelector('.modal-body');
+            let modalBody = booksModal2.querySelector('.modal-body');
 
             document.getElementById('title-input2').value = link.getAttribute('data-bs-title');
             document.getElementById('author-input2').value = link.getAttribute('data-bs-author');
@@ -412,6 +588,32 @@
             document.getElementById('category-input2').value = link.getAttribute('data-bs-category'); 
             document.getElementById('edition-input2').value = link.getAttribute('data-bs-edition'); 
             document.getElementById('language-input2').value = link.getAttribute('data-bs-language');             
+        });
+
+        booksModal3 = document.getElementById('addbookcopyModal')
+
+        booksModal3.addEventListener('show.bs.modal', function (event) {
+            console.log('test')
+            let link = event.relatedTarget;
+            let modalBody = booksModal3.querySelector('.modal-body');
+
+            document.getElementById('title-input3').value = link.getAttribute('data-bs-title');
+            document.getElementById('author-input3').value = link.getAttribute('data-bs-author');
+            document.getElementById('isbn-input3').value = link.getAttribute('data-bs-isbn'); 
+            document.getElementById('format-input3').value = link.getAttribute('data-bs-format'); 
+            document.getElementById('category-input3').value = link.getAttribute('data-bs-category'); 
+            document.getElementById('edition-input3').value = link.getAttribute('data-bs-edition'); 
+            document.getElementById('language-input3').value = link.getAttribute('data-bs-language');             
+        });
+
+        booksModal4 = document.getElementById('adjustbookcopyModal')
+
+        booksModal4.addEventListener('show.bs.modal', function (event) {
+            console.log('test')
+            let link = event.relatedTarget;
+            let modalBody = booksModal4.querySelector('.modal-body');
+
+            document.getElementById('state-input4').value = link.getAttribute('data-bs-state');
         });
 
     </script>
