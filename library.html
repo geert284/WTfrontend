@@ -330,23 +330,24 @@
             // TODO:For now account id is hardcoded
             // first bookcopy id where book 
             let reservationDto = {
-                accountId: 1,
                 bookId: currentBookId,
             }
             fetch("http://localhost:8080/reservation/create", {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json', 
+                    'Authorization': localStorage.getItem('WT_TOKEN')
                 },
                 body: JSON.stringify(reservationDto)
                 
             })
             .then(response => {
-                alert('Reservering gelukt!');                
+                //alert('Reservering gelukt!');                
             })
             .catch(error => {
-                alert('Er is iets fouts gegaan');
+                //alert('Er is iets fouts gegaan');
             });
+            location.reload();
         }
 
     </script>

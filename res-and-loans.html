@@ -132,7 +132,13 @@
     const resModal = document.getElementById('resModal');
 
     function createReservationTable() {
-      fetch('http://localhost:8080/reservation/unprocessed')
+      fetch('http://localhost:8080/reservation/unprocessed', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': localStorage.getItem('WT_TOKEN')
+                },
+            })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(reservation => {
@@ -163,7 +169,13 @@
     };
 
     function createLoansTable() {
-      fetch('http://localhost:8080/loan/open')
+      fetch('http://localhost:8080/loan/open', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': localStorage.getItem('WT_TOKEN')
+                },
+            })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(loan => {
@@ -189,7 +201,13 @@
     };
 
     function createReservationHistoryTable() {
-      fetch('http://localhost:8080/reservation/processed')
+      fetch('http://localhost:8080/reservation/processed', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': localStorage.getItem('WT_TOKEN')
+                },
+            })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(reservation => {
@@ -214,7 +232,13 @@
     };
 
     function createClosedLoansTable() {
-      fetch('http://localhost:8080/loan/closed')
+      fetch('http://localhost:8080/loan/closed', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': localStorage.getItem('WT_TOKEN')
+                },
+            })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(loan => {
@@ -278,16 +302,17 @@
       fetch("http://localhost:8080/loan/fromres", {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('WT_TOKEN')
         },
         body: JSON.stringify(CreateLoanFromReservationDto)
 
       })
         .then(response => {
-          alert('Boek uitlenen gelukt!');
+          //alert('Boek uitlenen gelukt!');
         })
         .catch(error => {
-          alert('Er is iets fouts gegaan');
+          //alert('Er is iets fouts gegaan');
         });
         location.reload();
     }
@@ -300,16 +325,17 @@
       fetch("http://localhost:8080/loan/finish", {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('WT_TOKEN')
         },
         body: JSON.stringify(finishLoanDto)
 
       })
         .then(response => {
-          alert('Lening voltooid');
+          //alert('Lening voltooid');
         })
         .catch(error => {
-          alert('Er is iets fouts gegaan');
+          //alert('Er is iets fouts gegaan');
         });
         location.reload();
     }
