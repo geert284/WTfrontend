@@ -165,7 +165,7 @@
                   <td>${tagNumber}</td> <!-- Display reservation.tagNumber or 'N/A' -->
                   <td>${reservation.reservationDate}</td>
                   <td>${reservation.available ? "Ja" : "Nee"}</td>
-                  <td><button class="" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
+                  <td><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
                     data-bs-title="${reservation.title}" data-bs-id="${reservation.id}" data-bs-resType= "${resType}"> Annuleren </button></td>
               </tr>`;
                     }).join('');

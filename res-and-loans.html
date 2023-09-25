@@ -200,7 +200,7 @@
         .then(data => {
           const tableHTML = data.map(reservation => {
             const tagNumber = reservation.tagNumber !== 0 ? reservation.tagNumber : 'N/A'; // Check if tagNumber is not equal to 0
-            const button = reservation.available ? `<button class="" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
+            const button = reservation.available ? `<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
                 data-bs-title="${reservation.title}" data-bs-name="${reservation.accountName}" data-bs-id="${reservation.id}"> Boek uitlenen </button>`
                 : " "
             return `<tr>
@@ -241,7 +241,7 @@
               <td>${loan.name}</td>
               <td>${loan.tagNumber}</td>
               <td>${loan.loanDate}</td> 
-              <td><button class="" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#loanModal"
+              <td><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#loanModal"
                 data-bs-title="${loan.title}" data-bs-name="${loan.name}" data-bs-id="${loan.loanId}"> Boek is ingeleverd </button></td>
           </tr>`;
           }).join('');

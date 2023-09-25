@@ -181,6 +181,7 @@
         const languageFilter = document.getElementById('languageFilter');
         const availablilyFilter = document.getElementById('availablilyFilter');
         const booksModal = document.getElementById('bookModal');
+        const confirmModal = document.getElementById('confirmModal');
         let booksData; // Hier bewaren we de originele boekgegevens
 
         // functie die JSON gegevens bijwerkt op basis van zoekbalk
@@ -218,7 +219,7 @@
                     return `<tr>
               <td> <a href = "#" data-bs-id="${book.id}" data-bs-toggle="modal" data-bs-target="#bookModal"  data-bs-title="${book.title}" 
                 data-bs-author="${book.author}" data-bs-isbn="${book.isbn}" data-bs-format="${book.format}" data-bs-category="${book.category}" 
-                data-bs-edition="${book.edition}" data-bs-language="${book.language}" data-bs-availableCopies="${book.availableCopies}"> ${book.title} </td>
+                data-bs-edition="${book.edition}" data-bs-language="${book.language}" data-bs-bookCopies="${book.bookCopies}"> ${book.title} </td>
               <td>${book.author}</td>
               <td>${book.isbn}</td>
               <td>${book.format}</td>   
@@ -325,6 +326,7 @@
        
         //variable to save current book
         let currentBookId = 0;
+        let currentBookAvailable = true;
 
         // Function that changes the content of the modal
         booksModal.addEventListener('show.bs.modal', function (event) {
@@ -332,6 +334,7 @@
             let modalBody = booksModal.querySelector('.modal-body');
 
             currentBookId = link.getAttribute('data-bs-id');
+            currentBookAvailable = link.getAttribute('data-bs-bookCopies') > 0;
             // setting this css style solving problem with new line in textContent
             modalBody.setAttribute('style', 'white-space: pre;');
 
@@ -342,8 +345,24 @@
             modalBody.textContent += "\r\nCategorie: \t\t\t" + link.getAttribute('data-bs-category'); 
             modalBody.textContent += "\r\nEditie: \t\t\t\t" + link.getAttribute('data-bs-edition'); 
             modalBody.textContent += "e\r\nTaal: \t\t\t\t" + link.getAttribute('data-bs-language'); 
-            modalBody.textContent += "\r\nBeschikbare kopieën: \t" + link.getAttribute('data-bs-availableCopies');              
+            modalBody.textContent += "\r\nBeschikbare kopieën: \t" + link.getAttribute('data-bs-bookCopies');              
         });
+
+        confirmModal.addEventListener('show.bs.modal', function (event) {
+            let link = event.relatedTarget;
+            let modalBody = confirmModal.querySelector('.modal-body');
+            modalBody.setAttribute('style', 'white-space: pre;');
+            if(currentBookAvailable){
+                modalBody.textContent = "Dit boek is beschikbaar en kan meteen worden opgehaald!";
+                modalBody.textContent += "\r\n\r\nWeet je zeker dat je dit boek wil reserveren?";
+            }
+            else{
+                modalBody.textContent = "Dit boek is NIET meteen beschikbaar, \r\nje zal op de wachtlijst komen voor dit boek.";
+                modalBody.textContent += "\r\n\r\nWeet je zeker dat je dit boek wil reserveren?";
+            }
+
+        });
+
 
         function createReservation(){
             // TODO:For now account id is hardcoded
