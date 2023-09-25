@@ -10,15 +10,65 @@
 
 </head>
 
-<body>
+<body onload="checkAdmin()">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
     crossorigin="anonymous"></script>
-  <div data-component="header"></div>
-
+    <nav class="navbar navbar-expand-lg navbar-light bg-light nav-underline">
+      <a class="navbar-brand" href="home-page.html">
+          &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <!-- padding is impossible with bootstrap -->
+          <img src="images/WT-logo.png" width="210" height="50" class="d-inline-block align-top" alt="">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+          <li class="nav-item active">
+              <a class="nav-link" href="library.html">Bibliotheek<span class="sr-only"></span></a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="my-books.html">Mijn boeken</a>
+          </li>
+          <span id="adminSpan" style="display: none;">
+              <li class="nav-item dropdown" id="adminDropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Administratie
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="res-and-loans.html">
+                      <img src="images/list.svg">
+                      &nbsp&nbspReserveringen en leningen beheren</a>
+                  <a class="dropdown-item" href="manage-books.html">
+                      <img src="images/book-open.svg">
+                      &nbsp&nbspBoeken beheren</a>
+                  <a class="dropdown-item" href="manage-users.html">
+                      <img src="images/users.svg">
+                      &nbsp&nbspGebruikers beheren</a>
+                  </div>
+              </li>
+          </span>
+          <li class="nav-item dropdown position-absolute bottom-0 end-0 translate-middle">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Mijn account&nbsp&nbsp
+                  <img src="images/user.svg">
+              </a>
+              <div class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="my-account.html">
+                  <img src="images/settings.svg">
+                  &nbsp&nbspMijn gegevens</a>
+              <a class="dropdown-item" href="login-page.html">
+                  <img src="images/log-out.svg">
+                  &nbsp&nbspUitloggen</a>
+              </div>
+          </li>
+          </ul>
+      </div>
+  </nav>
   <br>  
+
   <h2>Reserveringen en leningen beheren</h2>
-  
+  <br>
 
   <div class="accordion" id="reservationsAccordion">
     <div class="accordion-item">
@@ -123,6 +173,13 @@
 
 
   <script>
+    function checkAdmin() {
+        let admin = localStorage.getItem('WT_ADMIN');
+        if (admin == 'true') {
+            document.getElementById("adminSpan").style.display = "block";
+        }
+    }
+
 
     const reservationsTable = document.getElementById('reservationsTable');
     const loansTable = document.getElementById('loansTable');
@@ -132,7 +189,13 @@
     const resModal = document.getElementById('resModal');
 
     function createReservationTable() {
-      fetch('http://localhost:8080/reservation/unprocessed')
+      fetch('http://localhost:8080/reservation/unprocessed', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': localStorage.getItem('WT_TOKEN')
+                },
+            })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(reservation => {
@@ -163,7 +226,13 @@
     };
 
     function createLoansTable() {
-      fetch('http://localhost:8080/loan/open')
+      fetch('http://localhost:8080/loan/open', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': localStorage.getItem('WT_TOKEN')
+                },
+            })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(loan => {
@@ -189,7 +258,13 @@
     };
 
     function createReservationHistoryTable() {
-      fetch('http://localhost:8080/reservation/processed')
+      fetch('http://localhost:8080/reservation/processed', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': localStorage.getItem('WT_TOKEN')
+                },
+            })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(reservation => {
@@ -214,7 +289,13 @@
     };
 
     function createClosedLoansTable() {
-      fetch('http://localhost:8080/loan/closed')
+      fetch('http://localhost:8080/loan/closed', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': localStorage.getItem('WT_TOKEN')
+                },
+            })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(loan => {
@@ -278,16 +359,17 @@
       fetch("http://localhost:8080/loan/fromres", {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('WT_TOKEN')
         },
         body: JSON.stringify(CreateLoanFromReservationDto)
 
       })
         .then(response => {
-          alert('Boek uitlenen gelukt!');
+          //alert('Boek uitlenen gelukt!');
         })
         .catch(error => {
-          alert('Er is iets fouts gegaan');
+          //alert('Er is iets fouts gegaan');
         });
         location.reload();
     }
@@ -300,16 +382,17 @@
       fetch("http://localhost:8080/loan/finish", {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('WT_TOKEN')
         },
         body: JSON.stringify(finishLoanDto)
 
       })
         .then(response => {
-          alert('Lening voltooid');
+          //alert('Lening voltooid');
         })
         .catch(error => {
-          alert('Er is iets fouts gegaan');
+          //alert('Er is iets fouts gegaan');
         });
         location.reload();
     }

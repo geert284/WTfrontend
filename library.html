@@ -12,13 +12,65 @@
 
 </head>
 
-<body>
+<body onload="checkAdmin()">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
-    <div data-component="header"></div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light nav-underline">
+            <a class="navbar-brand" href="home-page.html">
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <!-- padding is impossible with bootstrap -->
+                <img src="images/WT-logo.png" width="210" height="50" class="d-inline-block align-top" alt="">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="library.html">Bibliotheek<span class="sr-only"></span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="my-books.html">Mijn boeken</a>
+                </li>
+                <span id="adminSpan" style="display: none;">
+                    <li class="nav-item dropdown" id="adminDropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Administratie
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="res-and-loans.html">
+                            <img src="images/list.svg">
+                            &nbsp&nbspReserveringen en leningen beheren</a>
+                        <a class="dropdown-item" href="manage-books.html">
+                            <img src="images/book-open.svg">
+                            &nbsp&nbspBoeken beheren</a>
+                        <a class="dropdown-item" href="manage-users.html">
+                            <img src="images/users.svg">
+                            &nbsp&nbspGebruikers beheren</a>
+                        </div>
+                    </li>
+                </span>
+                <li class="nav-item dropdown position-absolute bottom-0 end-0 translate-middle">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Mijn account&nbsp&nbsp
+                        <img src="images/user.svg">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="my-account.html">
+                        <img src="images/settings.svg">
+                        &nbsp&nbspMijn gegevens</a>
+                    <a class="dropdown-item" href="login-page.html">
+                        <img src="images/log-out.svg">
+                        &nbsp&nbspUitloggen</a>
+                    </div>
+                </li>
+                </ul>
+            </div>
+        </nav>
+    <br>
 
-    <h1>Bibliotheek</h1>
+    <h2>Bibliotheek</h2>
+    <br>
 
 
     <div class="row row-cols-2">
@@ -114,6 +166,12 @@
     </div>
 
     <script>
+        function checkAdmin() {
+            let admin = localStorage.getItem('WT_ADMIN');
+            if (admin == 'true') {
+                document.getElementById("adminSpan").style.display = "block";
+            }
+        }
 
         const searchTerm = document.getElementById('searchBar');
         const booksTable = document.getElementById('booksTable');
@@ -133,11 +191,8 @@
             const availabiltyValue = availablilyFilter.value;
 
             try {
-                const response = await fetch('http://localhost:8080/book/all');
+                const response = await fetch('http://localhost:8080/book/library');
                 const data = await response.json();
-
-                // Add available copies information to the filtered books
-                const booksWithCopies = await addAvailableCopiesToBooks(data);
 
                 // Filter the books based on the provided search criteria
                 let filteredBooks = searchTerm ? booksWithCopies.filter(book => {
@@ -170,7 +225,7 @@
               <td>${book.category}</td>
               <td>${book.edition}</td> 
               <td>${book.language}</td>
-              <td>${book.availableCopies}</td>
+              <td>${book.bookCopies}</td>
           </tr>`;
                 }).join('');
 
@@ -267,42 +322,6 @@
 
         // Roep getSearchTermFromURL aan om de zoekterm uit de URL te halen en in te vullen
         getSearchTermFromURL();
-
-        // Functie die telt het aantal beschikbare copys van alle boeken
-        function countAvailableCopys() {
-            return fetch('http://localhost:8080/bookcopy/all')
-                .then(response => response.json())
-                .then(book_copys => {
-                    let count = {};
-
-                    // Loop door alle boeken
-                    for (let i = 0; i < book_copys.length; i++) {
-                        if (book_copys[i].available) {
-                            const bookId = book_copys[i].bookId;
-                            count[bookId] = (count[bookId] || 0) + 1;
-                        }
-                    }
-
-                    return count;
-                });
-        }
-
-        // Function to add counts of available copies to the books array
-        async function addAvailableCopiesToBooks(books) {
-            try {
-                const counts = await countAvailableCopys();
-
-                // Loop through the books array and add the count property to each book
-                for (let i = 0; i < books.length; i++) {
-                    books[i].availableCopies = counts[books[i].id] || 0;
-                }
-
-                return books;
-            } catch (error) {
-                console.error('Error adding available copies to books:', error);
-                throw error;
-            }
-        }
        
         //variable to save current book
         let currentBookId = 0;
@@ -330,23 +349,24 @@
             // TODO:For now account id is hardcoded
             // first bookcopy id where book 
             let reservationDto = {
-                accountId: 1,
                 bookId: currentBookId,
             }
             fetch("http://localhost:8080/reservation/create", {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json', 
+                    'Authorization': localStorage.getItem('WT_TOKEN')
                 },
                 body: JSON.stringify(reservationDto)
                 
             })
             .then(response => {
-                alert('Reservering gelukt!');                
+                //alert('Reservering gelukt!');                
             })
             .catch(error => {
-                alert('Er is iets fouts gegaan');
+                //alert('Er is iets fouts gegaan');
             });
+            location.reload();
         }
 
     </script>

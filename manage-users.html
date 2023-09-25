@@ -10,10 +10,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
 </head>
-<body>
+<body onload="checkAdmin()">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 
     <script>
+        function checkAdmin() {
+            let admin = localStorage.getItem('WT_ADMIN');
+            if (admin == 'true') {
+                document.getElementById("adminSpan").style.display = "block";
+            }
+        }
+
         /* Get user data from database (account) and create and fill user table */
         function searchUsers() {
             fetch('http://localhost:8080/account/all')
@@ -22,15 +29,21 @@
                     console.log('Data', data);
 
                     let accountHtml = `
-                        <tr id="table-header">
+                        <tr>
                             <td>Naam</td>
                             <td>Email</td>
                             <td>Admin</td>
                             <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">+</button></td>
                         </tr>
                     `
+                    let pendingAccountHtml = `
+                        <tr>
+                            <td>Email</td>
+                            <td>Admin</td>
+                        </tr>
+                    `
                     data.forEach(account => {
-                        let icon = ''; 
+                        let icon = '';
                         // Check if user is admin
                         if (account.admin) { icon = '<img src="images/check-circle.svg">'; } else { icon = '<img src="images/circle.svg">' }
                         // Check if registered and active account
@@ -43,10 +56,19 @@
                                     <td style="text-align: right"><button type="button" onclick="deleteThisUser(${account.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Verwijder</button></td>
                                 </tr>
                             `
+                        // Fill table with pending accounts
+                        } else if (account.firstName == null) {
+                            pendingAccountHtml += `
+                                <tr>
+                                    <td>${account.email}</td>
+                                    <td>${icon}</td>
+                                </tr>
+                            `
                         }
                     });
 
                     document.getElementById('user-table').innerHTML = accountHtml;
+                    document.getElementById('pending-user-table').innerHTML = pendingAccountHtml;
                 });
         }
         searchUsers();
@@ -68,32 +90,44 @@
 
         /* Add user to database (whitelist) */
         function addUserToDB() {
+            // Reset span
+            document.getElementById('emailSpan').style.display = "none";
+
             let emailInput = document.getElementById("emailField").value;
-            let adminInput = document.getElementById("adminCheck").checked;
+            if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput)) {
+                let adminInput = document.getElementById("adminCheck").checked;
+                let newAccount = {
+                    email: emailInput,
+                    admin: adminInput
+                }
 
-            let newAccount = {
-                email: emailInput,
-                admin: adminInput
+                fetch("http://localhost:8080/account/create", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newAccount)
+                    
+                })
+                document.forms['inputForm'].reset();
+                closeModal();
+                location.reload();
+            } else {
+                document.getElementById('emailSpan').style.display = "block";
             }
-
-            fetch("http://localhost:8080/account/create", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newAccount)
-                
-            })
-            document.forms['inputForm'].reset();
+            
         }
 
         function deleteThisUser(userID) {
             localStorage.setItem('WT_DELETE_USER', userID);
         }
 
+        // Archives user in DB (active true to false)
         function archiveUser() {
             let userID = localStorage.getItem('WT_DELETE_USER');
-            let archiveThisUser = { active: false }
+            let archiveThisUser = {
+                active: false 
+            }
             fetch(`http://localhost:8080/account/archive-user/${userID}`, {
                 method: 'POST',
                 headers: {
@@ -104,12 +138,75 @@
             location.reload();
         }
 
+        // Closes register modal manually
+        function closeModal() {
+            var modal = document.getElementById('addUserModal');
+            var bsModal = bootstrap.Modal.getInstance(modal);
+            bsModal.hide();
+        }
+
     </script>
 
-    <div data-component="header"></div>
-    <br><br><br>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light nav-underline">
+        <a class="navbar-brand" href="home-page.html">
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <!-- padding is impossible with bootstrap -->
+            <img src="images/WT-logo.png" width="210" height="50" class="d-inline-block align-top" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="library.html">Bibliotheek<span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="my-books.html">Mijn boeken</a>
+            </li>
+            <span id="adminSpan" style="display: none;">
+                <li class="nav-item dropdown" id="adminDropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Administratie
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="res-and-loans.html">
+                        <img src="images/list.svg">
+                        &nbsp&nbspReserveringen en leningen beheren</a>
+                    <a class="dropdown-item" href="manage-books.html">
+                        <img src="images/book-open.svg">
+                        &nbsp&nbspBoeken beheren</a>
+                    <a class="dropdown-item" href="manage-users.html">
+                        <img src="images/users.svg">
+                        &nbsp&nbspGebruikers beheren</a>
+                    </div>
+                </li>
+            </span>
+            <li class="nav-item dropdown position-absolute bottom-0 end-0 translate-middle">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Mijn account&nbsp&nbsp
+                    <img src="images/user.svg">
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="my-account.html">
+                    <img src="images/settings.svg">
+                    &nbsp&nbspMijn gegevens</a>
+                <a class="dropdown-item" href="login-page.html">
+                    <img src="images/log-out.svg">
+                    &nbsp&nbspUitloggen</a>
+                </div>
+            </li>
+            </ul>
+        </div>
+    </nav>
+    <br>
+
     <h2>Gebruikers beheren</h2>
+    <br>
+    
     <table id="user-table"></table>
+    <br><br>
+    <h6>Toegevoegde gebruikers (in afwachting van registratie)</h4>
+    <table id="pending-user-table"></table>
 
     <!-- Modal pop-up for deleting users WITHOUT loans -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -130,7 +227,7 @@
         </div>
     </div>
 
-    <!-- Modal pop-up for deleting users WITH pending loans -->
+    <!-- Modal pop-up for deleting users WITH pending loans
     <div class="modal fade" id="pendingLoanModal" tabindex="-1" aria-labelledby="pendingLoanModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -146,7 +243,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Modal pop-up for adding users -->
     <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
@@ -170,10 +267,15 @@
                                 Alleen gebruikers met een Working Talent e-mailadres mogen admin worden!
                             </div>
                         </span>
+                        <span style="display: none;" id="emailSpan">
+                            <div class="alert alert-danger" role="alert">
+                                Voer een geldig e-mailadres in
+                            </div>
+                        </span>
                     </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-                <button type="button" class="btn btn-success disabled" data-bs-dismiss="modal" id="addUser" onclick="addUserToDB()">Toevoegen</button>
+                <button type="button" class="btn btn-success disabled" id="addUser" onclick="addUserToDB()">Toevoegen</button>
                 </div>
             </div>
         </div>
