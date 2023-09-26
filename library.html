@@ -210,8 +210,8 @@
                     return (categoryValue === '' || book.category === categoryValue) &&
                         (formatValue === '' || book.format === formatValue) &&
                         (languageValue === '' || book.language === languageValue) &&
-                        (availabiltyValue === '' || (book.availableCopies !== 0 && availabiltyValue === 'Ja') ||
-                            (book.availableCopies == 0 && availabiltyValue === 'Nee'));
+                        (availabiltyValue === '' || (book.bookCopies !== 0 && availabiltyValue === 'Ja') ||
+                            (book.bookCopies == 0 && availabiltyValue === 'Nee'));
                 });
 
                 // Build the table
