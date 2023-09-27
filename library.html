@@ -198,7 +198,7 @@
                 const data = await response.json();
 
                 // Filter the books based on the provided search criteria
-                let filteredBooks = searchTerm ? booksWithCopies.filter(book => {
+                let filteredBooks = searchTerm ? data.filter(book => {
                     return book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         book.isbn.toLowerCase().includes(searchTerm.toLowerCase()) ||
