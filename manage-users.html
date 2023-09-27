@@ -23,7 +23,13 @@
 
         /* Get user data from database (account) and create and fill user table */
         function searchUsers() {
-            fetch('http://localhost:8080/account/all')
+            fetch('http://localhost:8080/account/all', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('WT_TOKEN')
+                    }
+            })
             .then(response => response.json())
             .then(data => { 
                     console.log('Data', data);
@@ -104,7 +110,8 @@
                 fetch("http://localhost:8080/account/create", {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('WT_TOKEN')
                     },
                     body: JSON.stringify(newAccount)
                     
@@ -124,7 +131,8 @@
             fetch(`http://localhost:8080/account/loans/${userID}`, {
                     method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('WT_TOKEN')
                     }
             })
             .then(response => {
@@ -148,7 +156,8 @@
             fetch(`http://localhost:8080/account/archive-user/${userID}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('WT_TOKEN')
                 },
                 body: JSON.stringify(archiveThisUser)
             })
