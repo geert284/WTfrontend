@@ -11,6 +11,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
+        <style>
+            #book-table {
+                margin: 20px; /* Adds space above and below the table */
+                max-width: 1400px; /* Adjust the maximum width as per your preference */
+            }
+    
+            #bookcopy-table {
+                margin: 20px; /* Adds space above and below the table */
+                max-width: 1000px; /* Adjust the maximum width as per your preference */
+            }
+    
+        </style>
+     
+        
 </head>
 
 <body onload="checkAdmin()">
@@ -71,12 +85,14 @@
         </nav>
         <br>
         
-        <div class="content-container" style="margin: 20px;">
+
             <div class="body-text">
-                <h2>Boeken beheren</h2>
-                <br>
+
 
                 <div id="book-table">
+                    <h2>Boeken beheren</h2>
+                    <br>
+
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -113,7 +129,7 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+
     
 
 
@@ -347,7 +363,8 @@
             fetch("http://localhost:8080/book/create", {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('WT_TOKEN')
                 },
                 body: JSON.stringify(newBook)
                 
@@ -386,7 +403,8 @@
             fetch(`http://localhost:8080/bookcopy/create`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('WT_TOKEN')
                 },
                 body: JSON.stringify(newBookCopy)
             })
@@ -429,7 +447,8 @@
             fetch(`http://localhost:8080/book/update/${bookId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('WT_TOKEN')
                 },
                 body: JSON.stringify(newBook)
             })
@@ -459,7 +478,8 @@
             fetch(`http://localhost:8080/bookcopy/update/${bookCopyId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('WT_TOKEN')
                 },
                 body: JSON.stringify(newBookCopy)
             })
@@ -504,7 +524,7 @@
                                     </button>
                                 <td style="text-align: right"><button type="button" data-bs-id="${book.id}" data-bs-title="${book.title}" 
                                     data-bs-author="${book.author}" data-bs-isbn="${book.isbn}" data-bs-format="${book.format}" data-bs-category="${book.category}" 
-                                    data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})saveid" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookModal">Wijzig</button></td> 
+                                    data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookModal">Wijzig</button></td> 
                                 <td style="text-align: right"><button type="button" data-bs-id="${book.id}" data-bs-title="${book.title}" 
                                     data-bs-author="${book.author}" data-bs-isbn="${book.isbn}" data-bs-format="${book.format}" data-bs-category="${book.category}" 
                                     data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addbookcopyModal">Exemplaar toevoegen</button></td> 
@@ -533,7 +553,13 @@
         }
 
         function getCopies(bookID) { // onclick=getCopies(${bookId})
-            fetch('http://localhost:8080/bookcopy/all')
+            fetch('http://localhost:8080/bookcopy/all', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('WT_TOKEN')
+                    }
+            })
                 .then(response => response.json())
                 .then(data => {
                     console.log('Data', data);
@@ -563,7 +589,7 @@
                                 <td>${icon1}</td>
                                 <td></td>
                                 <td></td>                             
-                                <td style="text-align: right"><button type="button" data-bs-id="${bookcopy.id}" onclick="saveId(${bookID}); saveCopyId(${bookcopy.bookId})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookcopyModal">Wijzig</button></td>
+                                <td style="text-align: right"><button type="button" data-bs-id="${bookcopy.id}" onclick="saveId(${bookID}); saveCopyId(${bookcopy.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookcopyModal">Wijzig</button></td>
    
                             </tr>
                         `
