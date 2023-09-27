@@ -11,6 +11,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
+        <style>
+            #book-table {
+                margin: 20px; /* Adds space above and below the table */
+            }
+    
+            #bookcopy-table {
+                margin: 20px; /* Adds space above and below the table */
+            }
+    
+        </style>
+     
+        
 </head>
 
 <body onload="checkAdmin()">
@@ -504,7 +516,7 @@
                                     </button>
                                 <td style="text-align: right"><button type="button" data-bs-id="${book.id}" data-bs-title="${book.title}" 
                                     data-bs-author="${book.author}" data-bs-isbn="${book.isbn}" data-bs-format="${book.format}" data-bs-category="${book.category}" 
-                                    data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})saveid" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookModal">Wijzig</button></td> 
+                                    data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookModal">Wijzig</button></td> 
                                 <td style="text-align: right"><button type="button" data-bs-id="${book.id}" data-bs-title="${book.title}" 
                                     data-bs-author="${book.author}" data-bs-isbn="${book.isbn}" data-bs-format="${book.format}" data-bs-category="${book.category}" 
                                     data-bs-edition="${book.edition}" data-bs-language="${book.language}" onclick="saveId(${book.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addbookcopyModal">Exemplaar toevoegen</button></td> 
@@ -563,7 +575,7 @@
                                 <td>${icon1}</td>
                                 <td></td>
                                 <td></td>                             
-                                <td style="text-align: right"><button type="button" data-bs-id="${bookcopy.id}" onclick="saveId(${bookID}); saveCopyId(${bookcopy.bookId})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookcopyModal">Wijzig</button></td>
+                                <td style="text-align: right"><button type="button" data-bs-id="${bookcopy.id}" onclick="saveId(${bookID}); saveCopyId(${bookcopy.id})" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#adjustbookcopyModal">Wijzig</button></td>
    
                             </tr>
                         `
