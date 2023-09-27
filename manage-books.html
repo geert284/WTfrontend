@@ -363,7 +363,8 @@
             fetch("http://localhost:8080/book/create", {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('WT_TOKEN')
                 },
                 body: JSON.stringify(newBook)
                 
@@ -402,7 +403,8 @@
             fetch(`http://localhost:8080/bookcopy/create`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('WT_TOKEN')
                 },
                 body: JSON.stringify(newBookCopy)
             })
@@ -445,7 +447,8 @@
             fetch(`http://localhost:8080/book/update/${bookId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('WT_TOKEN')
                 },
                 body: JSON.stringify(newBook)
             })
@@ -475,7 +478,8 @@
             fetch(`http://localhost:8080/bookcopy/update/${bookCopyId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('WT_TOKEN')
                 },
                 body: JSON.stringify(newBookCopy)
             })
@@ -549,7 +553,13 @@
         }
 
         function getCopies(bookID) { // onclick=getCopies(${bookId})
-            fetch('http://localhost:8080/bookcopy/all')
+            fetch('http://localhost:8080/bookcopy/all', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('WT_TOKEN')
+                    }
+            })
                 .then(response => response.json())
                 .then(data => {
                     console.log('Data', data);
