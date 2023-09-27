@@ -9,6 +9,19 @@
     <script src="js/common.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
+    <style>
+        #manage-accounts-table {
+            max-width: 900px; /* Adjust the maximum width as per your preference */
+            margin: 20px; /* Adds space above and below the table */
+        }
+
+        #manage-pending-user-table {
+            max-width: 900px; /* Adjust the maximum width as per your preference */
+            margin: 20px; /* Adds space above and below the table */
+        }
+
+    </style>
+
 </head>
 <body onload="checkAdmin()">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
@@ -34,20 +47,9 @@
             .then(data => { 
                     console.log('Data', data);
 
-                    let accountHtml = `
-                        <tr>
-                            <td>Naam</td>
-                            <td>Email</td>
-                            <td>Admin</td>
-                            <td style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">+</button></td>
-                        </tr>
-                    `
-                    let pendingAccountHtml = `
-                        <tr>
-                            <td>Email</td>
-                            <td>Admin</td>
-                        </tr>
-                    `
+                    let accountHtml = " "
+
+                    let pendingAccountHtml = ""
                     data.forEach(account => {
                         let icon = '';
                         // Check if user is admin
@@ -232,13 +234,46 @@
     </nav>
     <br>
 
-    <h2>Gebruikers beheren</h2>
-    <br>
     
-    <table id="user-table"></table>
+    
+    <div id="manage-accounts-table">
+        <h2>Gebruikers beheren</h2>
+        <br>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Naam</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Admin</th>
+                    <th style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">+</button></th>
+                </tr>
+            </thead>
+            <tbody id="user-table">
+                <!-- Table rows will be added dynamically using JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+
+  
     <br><br>
-    <h6>Toegevoegde gebruikers (in afwachting van registratie)</h4>
-    <table id="pending-user-table"></table>
+    
+    <div id="manage-pending-user-table">
+        <h6>Toegevoegde gebruikers (in afwachting van registratie)</h4>   
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Email</th>
+                    <th scope="col">Admin</th>
+                </tr>
+            </thead>
+            <tbody id="pending-user-table">
+                <!-- Table rows will be added dynamically using JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+
 
     <!-- Modal pop-up for deleting users WITHOUT loans -->
     <div class="modal fade" id="archiveMyUser" tabindex="-1" aria-labelledby="archiveMyUserLabel" aria-hidden="true">
