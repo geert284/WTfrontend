@@ -14,58 +14,61 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
     crossorigin="anonymous"></script>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light nav-underline">
-      <a class="navbar-brand" href="home-page.html">
-          &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <!-- padding is impossible with bootstrap -->
-          <img src="images/WT-logo.png" width="210" height="50" class="d-inline-block align-top" alt="">
-      </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul class="navbar-nav">
-          <li class="nav-item active">
-              <a class="nav-link" href="library.html">Bibliotheek<span class="sr-only"></span></a>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light nav-underline">
+    <a class="navbar-brand" href="home-page.html">
+      &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp <!-- padding is impossible with bootstrap -->
+      <img src="images/WT-logo.png" width="210" height="50" class="d-inline-block align-top" alt="">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+      aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="library.html">Bibliotheek<span class="sr-only"></span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="my-books.html">Mijn boeken</a>
+        </li>
+        <span id="adminSpan" style="display: none;">
+          <li class="nav-item dropdown" id="adminDropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Administratie
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="res-and-loans.html">
+                <img src="images/list.svg">
+                &nbsp&nbspReserveringen en leningen beheren</a>
+              <a class="dropdown-item" href="manage-books.html">
+                <img src="images/book-open.svg">
+                &nbsp&nbspBoeken beheren</a>
+              <a class="dropdown-item" href="manage-users.html">
+                <img src="images/users.svg">
+                &nbsp&nbspGebruikers beheren</a>
+            </div>
           </li>
-          <li class="nav-item">
-              <a class="nav-link" href="my-books.html">Mijn boeken</a>
-          </li>
-          <span id="adminSpan" style="display: none;">
-              <li class="nav-item dropdown" id="adminDropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Administratie
-                  </a>
-                  <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="res-and-loans.html">
-                      <img src="images/list.svg">
-                      &nbsp&nbspReserveringen en leningen beheren</a>
-                  <a class="dropdown-item" href="manage-books.html">
-                      <img src="images/book-open.svg">
-                      &nbsp&nbspBoeken beheren</a>
-                  <a class="dropdown-item" href="manage-users.html">
-                      <img src="images/users.svg">
-                      &nbsp&nbspGebruikers beheren</a>
-                  </div>
-              </li>
-          </span>
-          <li class="nav-item dropdown position-absolute bottom-0 end-0 translate-middle">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Mijn account&nbsp&nbsp
-                  <img src="images/user.svg">
-              </a>
-              <div class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="my-account.html">
-                  <img src="images/settings.svg">
-                  &nbsp&nbspMijn gegevens</a>
-              <a class="dropdown-item" href="login-page.html">
-                  <img src="images/log-out.svg">
-                  &nbsp&nbspUitloggen</a>
-              </div>
-          </li>
-          </ul>
-      </div>
+        </span>
+        <li class="nav-item dropdown position-absolute bottom-0 end-0 translate-middle">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Mijn account&nbsp&nbsp
+            <img src="images/user.svg">
+          </a>
+          <div class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="my-account.html">
+              <img src="images/settings.svg">
+              &nbsp&nbspMijn gegevens</a>
+            <a class="dropdown-item" href="login-page.html">
+              <img src="images/log-out.svg">
+              &nbsp&nbspUitloggen</a>
+          </div>
+        </li>
+      </ul>
+    </div>
   </nav>
-  <br>  
+  <br>
 
   <div class="content-container" style="margin: 20px;">
 
@@ -167,6 +170,49 @@
     </div>
   </div>
 
+  <!-- Modal pop-up for reservation cancelation confirmation -->
+  <div class="modal fade" id="resCancelModal" tabindex="-1" aria-labelledby="resCancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="resCancelModalLabel">Reservering annuleren</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Details</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal"
+            data-bs-target="#confirmModal" onclick="cancelReservation()">Reservering annuleren</button>
+          <!-- add onclick event  -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal pop-up for awaiting reservation cancelation confirmation -->
+  <div class="modal fade" id="awaitingResCancelModal" tabindex="-1" aria-labelledby="awaitingResCancelModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="awaitingResCancelModalLabel">Reservering annuleren</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Details</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-dismiss="modal"
+            data-bs-target="#confirmModal" onclick="cancelAwaitingReservation()">Reservering annuleren</button>
+          <!-- add onclick event  -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal pop-up for loan finalisation confirmation -->
   <div class="modal fade" id="loanModal" tabindex="-1" aria-labelledby="loanModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -191,10 +237,10 @@
 
   <script>
     function checkAdmin() {
-        let admin = localStorage.getItem('WT_ADMIN');
-        if (admin == 'true') {
-            document.getElementById("adminSpan").style.display = "block";
-        }
+      let admin = localStorage.getItem('WT_ADMIN');
+      if (admin == 'true') {
+        document.getElementById("adminSpan").style.display = "block";
+      }
     }
 
 
@@ -205,21 +251,24 @@
     const historyTableLoans = document.getElementById('historyTableLoans');
     const loanModal = document.getElementById('loanModal');
     const resModal = document.getElementById('resModal');
+    const resCancelModal = document.getElementById('resCancelModal');
+    const awaitingResCancelModal = document.getElementById('awaitingResCancelModal');
 
     function createReservationTable() {
       fetch('http://localhost:8080/reservation/unprocessed/available', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json', 
-                    'Authorization': localStorage.getItem('WT_TOKEN')
-                },
-            })
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('WT_TOKEN')
+        },
+      })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(reservation => {
             const button = reservation.available ? `<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resModal"
-                data-bs-title="${reservation.title}" data-bs-name="${reservation.accountName}" data-bs-id="${reservation.id}"> Boek uitlenen </button>`
-                : " "
+                data-bs-title="${reservation.title}" data-bs-name="${reservation.accountName}" data-bs-id="${reservation.id}"
+                data-bs-tagNumber = "${reservation.tagNumber}"> Boek uitlenen </button>`
+              : " "
             return `<tr>
               <td>${reservation.title} </td>
               <td>${reservation.accountName}</td>
@@ -227,6 +276,10 @@
               <td>${reservation.reservationDate}</td>
               <td>${reservation.available ? "Ja" : "Nee"}</td>
               <td>${button}</td>
+              <td>
+              <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#resCancelModal"
+                data-bs-title="${reservation.title}" data-bs-name="${reservation.accountName}" data-bs-id="${reservation.id}"
+                data-bs-tagNumber = "${reservation.tagNumber}"> Annuleren </button></td>
           </tr>`;
           }).join('');
 
@@ -238,18 +291,19 @@
                             <th>Reserveringsdatum</th>
                             <th>Boek beschikbaar</th>
                             <th>Reservering voltooien</th>
+                            <th>Reservering annuleren</th>
                         </tr>${tableHTML}`;
         });
     };
 
     function createAwaitingReservationTable() {
       fetch('http://localhost:8080/reservation/unprocessed/awaiting', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json', 
-                    'Authorization': localStorage.getItem('WT_TOKEN')
-                },
-            })
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('WT_TOKEN')
+        },
+      })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(reservation => {
@@ -258,6 +312,9 @@
               <td>${reservation.accountName}</td>
               <td>${reservation.reservationDate}</td>
               <td>${reservation.available ? "Ja" : "Nee"}</td>
+              <td><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#awaitingResCancelModal"
+                data-bs-title="${reservation.title}" data-bs-name="${reservation.accountName}" data-bs-id="${reservation.id}"
+                data-bs-tagNumber = "${reservation.tagNumber}"> Annuleren </button></td>
           </tr>`;
           }).join('');
 
@@ -267,18 +324,19 @@
                             <th>Persoon</th>
                             <th>Reserveringsdatum</th>
                             <th>Boek beschikbaar</th>
+                            <th>Reservering annuleren</th>
                         </tr>${tableHTML}`;
         });
     };
 
     function createLoansTable() {
       fetch('http://localhost:8080/loan/open', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json', 
-                    'Authorization': localStorage.getItem('WT_TOKEN')
-                },
-            })
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('WT_TOKEN')
+        },
+      })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(loan => {
@@ -305,12 +363,12 @@
 
     function createReservationHistoryTable() {
       fetch('http://localhost:8080/reservation/processed', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json', 
-                    'Authorization': localStorage.getItem('WT_TOKEN')
-                },
-            })
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('WT_TOKEN')
+        },
+      })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(reservation => {
@@ -336,12 +394,12 @@
 
     function createClosedLoansTable() {
       fetch('http://localhost:8080/loan/closed', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json', 
-                    'Authorization': localStorage.getItem('WT_TOKEN')
-                },
-            })
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('WT_TOKEN')
+        },
+      })
         .then(response => response.json())
         .then(data => {
           const tableHTML = data.map(loan => {
@@ -366,7 +424,7 @@
     };
 
     createReservationHistoryTable();
-    createAwaitingReservationTable(); 
+    createAwaitingReservationTable();
     createClosedLoansTable();
     createReservationTable();
     createLoansTable();
@@ -381,8 +439,35 @@
       currentResId = link.getAttribute('data-bs-id');
       modalBody.setAttribute('style', 'white-space: pre;');
 
-      modalBody.textContent = "Titel: \t\t" + link.getAttribute('data-bs-title');
-      modalBody.textContent += "\r\nNaam lener: \t" + link.getAttribute('data-bs-name');
+      modalBody.textContent = "Titel: \t\t\t" + link.getAttribute('data-bs-title');
+      modalBody.textContent += "\r\nBoek nummer: \t" + link.getAttribute('data-bs-tagNumber');
+      modalBody.textContent += "\r\nNaam lener: \t\t" + link.getAttribute('data-bs-name');
+    });
+
+    // Function that changes the content of the modal
+    resCancelModal.addEventListener('show.bs.modal', function (event) {
+      let link = event.relatedTarget;
+      let modalBody = resCancelModal.querySelector('.modal-body');
+
+      currentResId = link.getAttribute('data-bs-id');
+      modalBody.setAttribute('style', 'white-space: pre;');
+
+      modalBody.textContent = "Titel: \t\t\t" + link.getAttribute('data-bs-title');
+      modalBody.textContent += "\r\nBoek nummer: \t" + link.getAttribute('data-bs-tagNumber');
+      modalBody.textContent += "\r\nNaam lener: \t\t" + link.getAttribute('data-bs-name');
+    });
+
+    // Function that changes the content of the modal
+    awaitingResCancelModal.addEventListener('show.bs.modal', function (event) {
+      let link = event.relatedTarget;
+      let modalBody = awaitingResCancelModal.querySelector('.modal-body');
+
+      currentResId = link.getAttribute('data-bs-id');
+      modalBody.setAttribute('style', 'white-space: pre;');
+
+      modalBody.textContent = "Titel: \t\t\t" + link.getAttribute('data-bs-title');
+      modalBody.textContent += "\r\nNaam lener: \t\t" + link.getAttribute('data-bs-name');
+      modalBody.textContent += "\r\nNaam lener: \t\t" + link.getAttribute('data-bs-id');
     });
 
     // Function that changes the content of the modal
@@ -418,8 +503,56 @@
         .catch(error => {
           //alert('Er is iets fouts gegaan');
         });
-        location.reload();
+      location.reload();
     }
+
+    function cancelReservation() {
+
+      let CreateLoanFromReservationDto = {
+        reservationId: currentResId,
+      }
+      fetch("http://localhost:8080/reservation/canceladmin", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('WT_TOKEN')
+        },
+        body: JSON.stringify(CreateLoanFromReservationDto)
+
+      })
+        .then(response => {
+          //alert('Boek uitlenen gelukt!');
+        })
+        .catch(error => {
+          //alert('Er is iets fouts gegaan');
+        });
+      location.reload();
+    }
+
+    function cancelAwaitingReservation() {
+
+      let CreateLoanFromReservationDto = {
+        reservationId: currentResId,
+      }
+      fetch("http://localhost:8080/awaitingReservation/canceladmin", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('WT_TOKEN')
+        },
+        body: JSON.stringify(CreateLoanFromReservationDto)
+
+      })
+        .then(response => {
+          //alert('Boek uitlenen gelukt!');
+        })
+        .catch(error => {
+          //alert('Er is iets fouts gegaan');
+        });
+      location.reload();
+    }
+
+
 
     function finishLoan() {
 
@@ -441,7 +574,7 @@
         .catch(error => {
           //alert('Er is iets fouts gegaan');
         });
-        location.reload();
+      location.reload();
     }
   </script>
 
