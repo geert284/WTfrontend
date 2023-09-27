@@ -118,38 +118,41 @@
     </nav>
     <br>
 
-    <h2>Mijn gegevens</h2>
-    <br>
+    <div class="content-container" style="margin: 20px;">
 
-    <p style="font-weight: bold;">Persoonsgegevens</p>
-        <th>Voornaam</th>
-        <input type="text" id="firstNameInput"> <br>
-        <th>Achternaam</th>
-        <input type="text" id="lastNameInput"> <br>
+        <h2>Mijn gegevens</h2>
         <br>
-    <form id="myForm">
-        <p style="font-weight: bold;">Wachtwoord instellen</p>
-        <th>Nieuw wachtwoord</th>
-        <input type="password" id="newPassword"> <br>
-        <div id="emailHelp" class="form-text">Gebruik een wachtwoord van minstens 8 karakters met minstens 1 hoofdletter, 1 speciaal teken en 1 cijfer.</div>
-    </form>
-    <button type="button" class="btn btn-success" onclick="saveInfo()">Opslaan</button>
-    <br><br>
-    <span style="display: none;" id="alertSpanSave">
-        <div class="alert alert-success" role="alert" style="width: 300px;">
-            Je gegevens zijn opgeslagen!
-        </div>
-    </span>
-    <span style="display: none;" id="alertSpanFill">
-        <div class="alert alert-danger" role="alert" style="width: 300px;">
-            Vul alle invoervelden in
-        </div>
-    </span>
-    <span style="display: none;" id="alertSpanPassword">
-        <div class="alert alert-danger" role="alert" style="width: 300px;">
-            Dit wachtwoord voldoet niet aan de eisen
-        </div>
-    </span>
+
+        <p style="font-weight: bold;">Persoonsgegevens</p>
+            <th>Voornaam</th>
+            <input type="text" id="firstNameInput"> <br>
+            <th>Achternaam</th>
+            <input type="text" id="lastNameInput"> <br>
+            <br>
+        <form id="myForm">
+            <p style="font-weight: bold;">Wachtwoord instellen</p>
+            <th>Nieuw wachtwoord</th>
+            <input type="password" id="newPassword"> <br>
+            <div id="emailHelp" class="form-text">Gebruik een wachtwoord van minstens 8 karakters met minstens 1 hoofdletter, 1 speciaal teken en 1 cijfer.</div>
+        </form>
+        <button type="button" class="btn btn-success" onclick="saveInfo()">Opslaan</button>
+        <br><br>
+        <span style="display: none;" id="alertSpanSave">
+            <div class="alert alert-success" role="alert" style="width: 300px;">
+                Je gegevens zijn opgeslagen!
+            </div>
+        </span>
+        <span style="display: none;" id="alertSpanFill">
+            <div class="alert alert-danger" role="alert" style="width: 300px;">
+                Vul alle invoervelden in
+            </div>
+        </span>
+        <span style="display: none;" id="alertSpanPassword">
+            <div class="alert alert-danger" role="alert" style="width: 300px;">
+                Dit wachtwoord voldoet niet aan de eisen
+            </div>
+        </span>
+    </div>
 
 </body>
 </html>

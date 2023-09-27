@@ -70,54 +70,53 @@
             </div>
         </nav>
         <br>
-    
-        <div class="body-text">
-            <h2>Boeken beheren</h2>
-            <br>
+        
+        <div class="content-container" style="margin: 20px;">
+            <div class="body-text">
+                <h2>Boeken beheren</h2>
+                <br>
 
-            <div id="book-table">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Titel</th>
-                            <th scope="col">Auteur</th>
-                            <th scope="col">ISBN</th>
-                            <th scope="col">Categorie</th>
-                            <th scope="col">Bindwijze</th>
-                            <th scope="col">Editie</th>
-                            <th scope="col">Taal</th>
-                            <th scope="col">Aantal exemplaren</th>
-                            <th style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addbookModal">Boek toevoegen</button></th>
-                        </tr>
-                    </thead>
-                    <tbody id="bookadmin-table">
-                        <!-- Table rows will be added dynamically using JavaScript -->
-                    </tbody>
-                </table>
+                <div id="book-table">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Titel</th>
+                                <th scope="col">Auteur</th>
+                                <th scope="col">ISBN</th>
+                                <th scope="col">Categorie</th>
+                                <th scope="col">Bindwijze</th>
+                                <th scope="col">Editie</th>
+                                <th scope="col">Taal</th>
+                                <th scope="col">Aantal kopieën</th>
+                                <th style="text-align: right"><button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addbookModal">Boek toevoegen</button></th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookadmin-table">
+                            <!-- Table rows will be added dynamically using JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="collapse" id="bookcopy-table">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Boeknummer</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Conditie van het boek</th>
+                                <th scope="col">In/buiten gebruik</th>
+                                <th></th>    
+                            </tr>
+                        </thead>
+                        <tbody id="bookcopy-table-body">
+                            <!-- Generated table rows will go here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
-            <div class="collapse" id="bookcopy-table">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Boeknummer</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Conditie van het boek</th>
-                            <th scope="col">In/buiten gebruik</th>
-                            <th></th>    
-                        </tr>
-                    </thead>
-                    <tbody id="bookcopy-table-body">
-                        <!-- Generated table rows will go here -->
-                    </tbody>
-                </table>
-            </div>
     
 
-            <table id="bookadmin-table"></table>
-            <br><br><br>
-    
-            <table id="bookcopy-table"></table>
+
     
             <div class="modal fade" id="addbookModal" tabindex="-1" aria-labelledby="addbookModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -354,7 +353,6 @@
                 
             })
             .then(response => {
-                alert('Is goedgegaan');
                 location.reload();
             })
             .catch(error => {
@@ -393,7 +391,6 @@
                 body: JSON.stringify(newBookCopy)
             })
                 .then(response => {
-                    alert('Is goedgegaan');
                     location.reload();
                 })
                 .catch(error => {
@@ -437,7 +434,6 @@
                 body: JSON.stringify(newBook)
             })
             .then(response => {
-                alert('Is goedgegaan');
                 location.reload();
             })
             .catch(error => {
@@ -468,7 +464,6 @@
                 body: JSON.stringify(newBookCopy)
             })
             .then(response => {
-                alert('Is goedgegaan');
                 location.reload();
             })
             .catch(error => {
@@ -496,8 +491,6 @@
                                 <td>${book.language}</td>
                                 <td>${book.bookCopies}</td>
                                 
-                                
-                                <td></td>
 
                                 <td style="text-align: right"> 
                                     <button type="button" 

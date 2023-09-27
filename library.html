@@ -69,61 +69,63 @@
         </nav>
     <br>
 
-    <h2>Bibliotheek</h2>
-    <br>
+
+    <div class="content-container" style="margin: 20px;">
+        <h2>Bibliotheek</h2>
+        <br>
 
 
-    <div class="row row-cols-2">
+        <div class="row row-cols-2">
 
 
-        <div class="col-2">
-            <h4>Filters</h4>
-            <div>
-                <label for="categoryFilter">Categorie:</label>
-                <select class="form-select" id="categoryFilter">
-                    <option value="">Alle categorieën</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="formatFilter">Vorm:</label>
-                <select class="form-select" id="formatFilter">
-                    <option value="">Alle vormen</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="languageFilter">Taal:</label>
-                <select class="form-select" id="languageFilter">
-                    <option value="">Alle talen</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="availablilyFilter">Beschikbaar:</label>
-                <select class="form-select" id="availablilyFilter">
-                    <option value="">Alle beschikbaarheden</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="col-10">
-            <div>
-                <div style="display: inline-block">
-                    <input style="display:inline-block" type="text" id="searchBar" placeholder="Zoek"
-                        class="form-control">
+            <div class="col-2">
+                <h4>Filters</h4>
+                <div>
+                    <label for="categoryFilter">Categorie:</label>
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">Alle categorieën</option>
+                    </select>
                 </div>
-                <div class="" style="display: inline-block">
-                    <button style="display:inline-block; width:150px; height: 35px;" type="button"
-                        onclick="updateTable(searchTerm.value)" class="btn btn-success col-2">Zoek een boek</button>
+
+                <div>
+                    <label for="formatFilter">Vorm:</label>
+                    <select class="form-select" id="formatFilter">
+                        <option value="">Alle vormen</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="languageFilter">Taal:</label>
+                    <select class="form-select" id="languageFilter">
+                        <option value="">Alle talen</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="availablilyFilter">Beschikbaar:</label>
+                    <select class="form-select" id="availablilyFilter">
+                        <option value="">Alle beschikbaarheden</option>
+                    </select>
                 </div>
             </div>
 
-            <h3>Boekenlijst</h3>
-            <table class="table table-striped" id="booksTable"></table>
+            <div class="col-10">
+                <div>
+                    <div style="display: inline-block">
+                        <input style="display:inline-block" type="text" id="searchBar" placeholder="Zoek"
+                            class="form-control">
+                    </div>
+                    <div class="" style="display: inline-block">
+                        <button style="display:inline-block; width:150px; height: 35px;" type="button"
+                            onclick="updateTable(searchTerm.value)" class="btn btn-success col-2">Zoek een boek</button>
+                    </div>
+                </div>
+
+                <h3>Boekenlijst</h3>
+                <table class="table table-striped" id="booksTable"></table>
+            </div>
         </div>
     </div>
-
 
     <!-- Modal pop-up for book details -->
     <div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
