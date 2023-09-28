@@ -88,9 +88,9 @@
                 </div>
 
                 <div>
-                    <label for="formatFilter">Vorm:</label>
+                    <label for="formatFilter">Bindwijze:</label>
                     <select class="form-select" id="formatFilter">
-                        <option value="">Alle vormen</option>
+                        <option value="">Alle bindwijzes</option>
                     </select>
                 </div>
 
@@ -237,7 +237,7 @@
                             <th>Titel</th>
                             <th>Auteur</th>
                             <th>ISBN</th>
-                            <th>Soort</th>
+                            <th>Bindwijze</th>
                             <th>Categorie</th>
                             <th>Editie</th>
                             <th>Taal</th>
@@ -343,7 +343,7 @@
             modalBody.textContent = "Titel: \t\t\t\t" + link.getAttribute('data-bs-title');
             modalBody.textContent += "\r\nAuteur: \t\t\t\t" + link.getAttribute('data-bs-author');
             modalBody.textContent += "\r\nIsbn: \t\t\t\t" + link.getAttribute('data-bs-isbn'); 
-            modalBody.textContent += "\r\nSoort: \t\t\t\t" + link.getAttribute('data-bs-format'); 
+            modalBody.textContent += "\r\nBindwijze: \t\t\t" + link.getAttribute('data-bs-format'); 
             modalBody.textContent += "\r\nCategorie: \t\t\t" + link.getAttribute('data-bs-category'); 
             modalBody.textContent += "\r\nEditie: \t\t\t\t" + link.getAttribute('data-bs-edition'); 
             modalBody.textContent += "e\r\nTaal: \t\t\t\t" + link.getAttribute('data-bs-language'); 
